@@ -7,6 +7,7 @@ import com.banshion.portal.web.sys.domain.SysUserExample;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @MyBatisRepository
 public interface SysUserMapper {
@@ -39,4 +40,6 @@ public interface SysUserMapper {
     ShiroUser getShiroUser(@Param("id") String id);
 
     List<ShiroUser> getShiroUser();
+
+    List<Map<String,Object>> exportUser();
 }

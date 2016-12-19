@@ -5,7 +5,7 @@
 <html>
 <head>
     <title>基本信息维护</title>
-    <link type="text/css" rel="stylesheet" href="${ctx}/static/banshion/css/main-style.css" />
+    <%--<link type="text/css" rel="stylesheet" href="${ctx}/static/banshion/css/main-style.css" />--%>
 </head>
 <body>
 <div id='dialog-confirm' class="modal fade">
@@ -243,6 +243,9 @@
         $( "#dialog-confirm" ).modal("hide");
     });
 
+    $("#expExcel").click(function(){
+        window.open("${ctx}/basic/export")
+    });
 </script>
 </body>
 </html>

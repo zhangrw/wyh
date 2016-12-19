@@ -39,6 +39,24 @@
         </if>
     </select>
 
+  <select id="exportUser" resultType="map">
+    select su.LOGINNAME,
+   <!-- tu.id, -->
+    tu.NAME,tu.JOB_NUMBER,
+    (case when tu.sex=1 then '男' else '女' end) as SEX,
+    tu.ID_NUMBER,tu.BANK_NUMBER,
+    sd.name as DEPTNAME,
+    <!-- tu.dept_id, -->
+    tu.BZ
+    from sys_user su
+    left join t_index_user tu on su.id = tu.id
+    left join sys_dept sd on tu.dept_id = sd.id
+    where 1=1
+    <if test='id != null and id != "" '>
+      and su.id = #{id}
+    </if>
+  </select>
+
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
