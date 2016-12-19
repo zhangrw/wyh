@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+       http://www.springframework.org/schema/aop
+	   http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+	   http://www.springframework.org/schema/context
+	   http://www.springframework.org/schema/context/spring-context.xsd
+	   http://www.springframework.org/schema/mvc
+	   http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+	   ">
+
+    <context:component-scan  base-package="com.**.service,com.banshion.portal.beanvalidator">
+        <context:include-filter type ="annotation" expression= "org.springframework.stereotype.Service" />
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+    </context:component-scan>
+    <context:component-scan base-package="com.**"/>
+
+    <context:property-placeholder ignore-unresolvable="true" local-override="true"
+            location="classpath*:/application.properties"
+    />
+
+    <bean id="propertyConfigurer" class="com.banshion.portal.util.CommPropertiesConfiguration">
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath*:/application.properties</value>
+            </list>
+        </property>
+    </bean>
+    <!-- hibernate validator -->
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+
+    <!-- 配置数据源 使用的是Druid数据源 -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close">
+        <property name="url" value="${db.url}" />
+        <property name="username" value="${db.username}" />
+        <property name="password" value="${db.password}" />
+        <!-- 这一项可配可不配，如果不配置druid会根据url自动识别dbType，
+                然后选择相应的driverClassName
+         -->
+        <!--<property name="driverClassName" value="${db.driverClassName}" />-->
+        <!--属性类型是字符串，通过别名的方式配置扩展插件，
+            常用的插件有：
+            监控统计用的filter:stat
+            日志用的filter:log4j
+            防御sql注入的filter:wall
+        -->
+        <property name="filters" value="${filters}" />
+        <!--最大连接池数量-->
+        <property name="maxActive" value="${maxActive}" />
+        <!--初始化时建立物理连接的个数。初始化发生在显示调用init方法,或者第一次getConnection时-->
+        <property name="initialSize" value="${initialSize}" />
+        <!--获取连接时最大等待时间，单位毫秒。配置了maxWait之后，缺省启用公平锁，并发效率会有所下降，
+            如果需要可以通过配置useUnfairLock属性为true使用非公平锁。
+        -->
+        <property name="maxWait" value="${maxWait}" />
+        <!--最小连接池数量-->
+        <property name="minIdle" value="${minIdle}"/>
+        <!--是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。
+            在mysql5.5以下的版本中没有PSCache功能，建议关闭掉。    5.5及以上版本有PSCache，建议开启。
+        -->
+        <property name="poolPreparedStatements" value="${poolPreparedStatements}"/>
+        <!--要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。
+            在Druid中，不会存在Oracle下PSCache占用内存过多的问题，可以把这个数值配置大一些，比如说100
+        -->
+        <property name="maxOpenPreparedStatements" value="${maxOpenPreparedStatements}" />
+        <!-- Destroy线程会检测连接的间隔时间   testWhileIdle的判断依据-->
+        <property name="timeBetweenEvictionRunsMillis" value="${timeBetweenEvictionRunsMillis}" />
+        <!-- Destory线程中如果检测到当前连接的最后活跃时间和当前时间的差值大于minEvictableIdleTimeMillis，
+            则关闭当前连接。
+        -->
+        <property name="minEvictableIdleTimeMillis" value="${minEvictableIdleTimeMillis}" />
+        <!--用来检测连接是否有效的sql，要求是一个查询语句。
+            如果validationQuery为null，testOnBorrow、testOnReturn、
+            testWhileIdle都不会其作用。
+        -->
+        <!--<property name="validationQuery" value="${validationQuery}" />-->
+        <!--<property name="testOnBorrow" value="${testOnBorrow}" />-->
+        <!--<property name="testOnReturn" value="${testOnReturn}" />-->
+        <!--建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于
+            timeBetweenEvictionRunsMillis，   执行validationQuery检测连接是否有效。
+        -->
+        <!--<property name="testWhileIdle" value="${testWhileIdle}" />-->
+        <!-- 是否开启removeAbandoned功能 -->
+        <property name="removeAbandoned" value="${removeAbandoned}" />
+        <!--对于建立时间超过removeAbandonedTimeout的连接强制关闭-->
+        <property name="removeAbandonedTimeout" value="${removeAbandonedTimeout}" /> <!-- 60秒，也就是1分钟 -->
+        <!--指定发生removeabandoned的时候，是否记录当前线程的堆栈信息到日志中-->
+        <property name="logAbandoned" value="${logAbandoned}" />
+        <!--<property name="connectionInitSqls"> &lt;!&ndash; 属性为 List<String> 类型&ndash;&gt;-->
+            <!--<list> &lt;!&ndash;  value-type="java.util.ArrayList" &ndash;&gt;-->
+                <!--<value>insert into test(id) values('1')</value>-->
+                <!--<value>insert into test(id) values('2')</value>-->
+                <!--<value>insert into test(id) values('3')</value>-->
+            <!--</list>-->
+        <!--</property>-->
+    </bean>
+
+<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource" />
+    <!-- 自动扫描entity目录, 省掉Configuration.xml里的手工配置 -->
+    <property name="mapperLocations" value="classpath:mybatis/**/*Mapper.xml" />
+    <property name="configLocation" value="classpath:mybatis-config.xml"/>
+</bean>
+
+    <!-- 扫描basePackage下所有以@MyBatisRepository标识的 接口 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.**.dao"/>
+        <property name="annotationClass" value="com.banshion.intf.MyBatisRepository"/>
+    </bean>
+
+    <!-- 配置事务管理器 -->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <!-- 注解方式配置事物 -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+    <!-- 拦截器方式配置事物 -->
+    <tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="insert*" propagation="REQUIRED" />
+            <tx:method name="update*" propagation="REQUIRED" />
+            <tx:method name="delete*" propagation="REQUIRED" />
+
+            <tx:method name="get*" propagation="SUPPORTS" read-only="true" />
+            <tx:method name="find*" propagation="SUPPORTS" read-only="true" />
+            <tx:method name="select*" propagation="SUPPORTS" read-only="true" />
+
+        </tx:attributes>
+    </tx:advice>
+
+    <!-- Spring aop事务管理 -->
+    <!--<aop:config>-->
+        <!--<aop:pointcut id="transactionPointcut"-->
+                      <!--expression="execution(com.banshion.**.impl.(*impl))" />-->
+        <!--<aop:advisor pointcut-ref="transactionPointcut"-->
+                     <!--advice-ref="transactionAdvice" />-->
+    <!--</aop:config>-->
+
+    <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+    <!--密码为MD5加密的-->
+
+    <!--缓存管理-->
+    <bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager"/>
+
+    <!-- 項目自定义的Realm  要实现用户/角色/权限到自主查询-->
+    <bean id="jdbcRealm" class="com.banshion.portal.sys.authentication.ShiroDbRealm">
+    </bean>
+
+    <!-- Shiro安全管理器 -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="jdbcRealm"/>
+        <property name="cacheManager" ref="cacheManager"/>
+    </bean>
+
+    <!--
+       Shiro主过滤器本身功能十分强大，其强大之处就在于它支持任何基于URL路径表达式的、自定义的过滤器的执行
+       Web应用中，Shiro可控制的Web请求必须经过Shiro主过滤器的拦截，Shiro对基于Spring的Web应用提供了完美的支持
+    -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <!-- Shiro的核心安全接口，这个属性是必须的 -->
+        <property name="securityManager" ref="securityManager"/>
+        <!-- 要求登录时的链接(登录页面地址)，非必须的属性，默认会自动寻找Web工程根目录下的"/login.jsp"页面 -->
+        <property name="loginUrl" value="/login"/>
+        <!-- 登录成功后要跳转的连接(本例中此属性用不到，因为登录成功后的处理逻辑在LoginController里硬编码) -->
+         <property name="successUrl" value="/index" ></property>
+        <!-- 用户访问未对其授权的资源时，所显示的连接 -->
+        <property name="unauthorizedUrl" value="/"/>
+        <property name="filterChainDefinitions">
+            <value>
+                /login=anon
+                /test=authc
+                /sys/*=authc
+                /logout = logout
+                /static/** = anon
+                /service/**=anon
+                /** = authc
+            </value>
+        </property>
+    </bean>
+
+</beans>

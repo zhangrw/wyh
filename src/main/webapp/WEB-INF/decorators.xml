@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/WEB-INF/layout/">
+	<excludes>
+		<pattern>/static/*</pattern>
+		<!--<pattern>/login*</pattern>-->
+		<pattern>*/redirectto*</pattern>
+	    <pattern>*/openmodal*</pattern>
+	    <pattern>*/login/*</pattern>
+	    <pattern>*2Excel*</pattern>
+	</excludes>   
+	<decorator name="sys" page="sys.jsp">
+		<pattern>/sys/*</pattern>
+		<pattern>/index</pattern>
+		<!--<pattern>/test</pattern>-->
+	</decorator>
+	<decorator name="basic" page="basic.jsp">
+		<pattern>/basic</pattern>
+		<pattern>/basic/*</pattern>
+	</decorator>
+</decorators>

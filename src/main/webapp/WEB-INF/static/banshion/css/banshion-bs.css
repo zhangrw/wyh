@@ -1,0 +1,124 @@
+/*
+ * Special styles for Bootstrap
+ */
+
+
+
+/* John
+-------------------------------------------------- */
+
+
+/* Forms */
+.bs-bdcor.form-inline select,
+.bs-bdcor.form-inline input[type="text"],
+.bs-bdcor.form-inline input[type="password"] {
+  width: 180px;
+}
+.bs-bdcor-control-sizing select,
+.bs-bdcor-control-sizing input[type="text"] + input[type="text"] {
+  margin-top: 10px;
+}
+.bs-bdcor-form .input-group {
+  margin-bottom: 10px;
+}
+@media (max-width: 767px) {
+.bs-navbar-fixed-top {
+	   position: fixed; 
+	   z-index: 1030;
+	   border-width: 0 0 1px; 
+	   width:100%;
+	  }
+ 	.bs-body-padding-top{
+	  padding-top:145px;
+	  } 
+}
+@media (min-width: 768px) {
+  .bs-navbar-fixed-top {
+	   position: fixed; 
+	   z-index: 1030;
+	   border-width: 0 0 1px;
+	   width:720px;
+	  }  
+	  .bs-body-padding-top{
+	  padding-top:245px;
+	  }
+} 
+@media (min-width: 992px) {
+	.bs-navbar-fixed-top {
+	   position: 1030; 
+	   z-index: 1030;
+	   border-width: 0 0 1px;
+	   width:940px;
+	  }
+	   .bs-body-padding-top{
+	  padding-top:195px;
+	  }
+}
+@media (min-width: 1200px) {
+	 .bs-navbar-fixed-top {
+	   position: fixed; 
+	   z-index: 1030;
+	   border-width: 0 0 1px;
+	   width:1140px;
+	  }
+	  .bs-body-padding-top{
+	  padding-top:145px;
+	  }
+}
+/*
+ * Glyphicons
+ *
+ * Special styles for displaying the icons and their classes in the docs.
+ */
+
+.bs-glyphicons {
+  padding-left: 0;
+  padding-bottom: 1px;
+  margin-bottom: 20px;
+  list-style: none;
+  overflow: hidden;
+}
+.bs-glyphicons li {
+  color: #428BCA;
+  float: left;
+  width: 100px;
+  height: 100px;
+  padding: 10px;
+  /* margin: 0 -1px -1px 0;
+   font-size: 12px;
+  line-height: 1.4; */
+  text-align: center;
+}
+.bs-glyphicons .glyphicon {
+  margin-top: 5px;
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+.bs-glyphicons .glyphicon-class {
+  display: block;
+  text-align: center;
+  word-wrap: break-word; /* Help out IE10+ with class names */
+}
+.bs-glyphicons li:hover {
+  background-color: rgba(86,61,124,.1);
+}
+
+
+.icon-edit {
+    background-image: url("../images/edit-btn.png");
+    background-repeat: no-repeat;
+    cursor: pointer;
+    display: inline-block;
+    height: 16px;
+    vertical-align: text-top;
+    width: 16px;
+}
+
+.text-group-addon{
+	line-height: 1;
+	white-space: nowrap;
+	vertical-align: middle;
+	display: table-cell;
+}
+
+

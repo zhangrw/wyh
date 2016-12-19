@@ -1,0 +1,58 @@
+@charset "utf-8";
+
+/*登录页*/
+.login_area { 
+	float:left;
+	position:absolute;
+	background-image: url(../images/loginNbg.png);
+	background-repeat: no-repeat;
+	left:50%;
+	top:45%;
+	margin:-152px 0 0 -293px;
+	width:585px;
+	height:303px;
+}
+.loginName {
+	font-size: 12px;
+	color: #000;
+}
+.loginTextarea {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #000;
+	height: 25px;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #abadb3;
+	border-right-color: #e3e9ef;
+	border-bottom-color: #e3e9ef;
+	border-left-color: #e3e9ef;
+	padding-left:5px;
+}
+#loginBottom{
+	position:absolute;
+	left:50%;
+	bottom:10%;
+	margin:0 0 0 -490px;
+	width:980px;
+}
+#loginBottom span{position:absolute; width:980px;font-family: Arial, Helvetica, sans-serif;font-size: 12px;color: #999;text-align:center;}
+.login_areaFail {
+	font-size: 12px;
+	color: #F00;
+}
+
+.versionRemind {
+    position:absolute;
+    width:80%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    color: #999;
+    text-align:center;
+}
