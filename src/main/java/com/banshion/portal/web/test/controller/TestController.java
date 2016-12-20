@@ -43,7 +43,7 @@ public class TestController {
         try {
             response.setContentType("application/x-msdownload;");
             response.setHeader("Content-disposition", "attachment; filename="
-                    + new String("问卷时长列表.xls".getBytes("utf-8"), "ISO8859-1"));
+                    + new String("excel名称.xls".getBytes("utf-8"), "ISO8859-1"));
 
             List<Map<String,Object>> list = new ArrayList<Map<String, Object>>();
 
@@ -58,7 +58,7 @@ public class TestController {
             String[] titleArr = {"测试","标题"};
             String[] keyArr = {"NAME","TEST"};
             ExcelExportConfig config = new ExcelExportConfig();
-            config.setSheetName("问卷录入时长列表");
+            config.setSheetName("sheet页名称");
             ExcelExportUtil.fillExcel(list,titleArr,keyArr, workbook,config);
 
             workbook.write(bos);
@@ -76,19 +76,12 @@ public class TestController {
     public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file,
                                     HttpServletRequest request) {
         Map<String, Object> result = new HashMap<String, Object>();
-
-        String stockCode = request.getParameter("stockCode") == null ? ""
-                : request.getParameter("stockCode");
-        String stockName = request.getParameter("stockName") == null ? ""
-                : request.getParameter("stockName");
         long fileSize = file.getSize();
         if (fileSize > 10240000) {
             result.put("msg", "文件大小不能超过10M!");
             result.put("success", false);
             return new ResponseEntity(result, HttpStatus.OK);
         }
-
-
         String ctxPath = CommPropertiesConfiguration
                 .getContextProperty("document_upload_dir");
         File dirPath = new File(ctxPath);
@@ -105,20 +98,16 @@ public class TestController {
             // 文件上传
             file.transferTo(filePath);
             // 文件解析
-            List excleList = readExcelContent(filePath, "");
+            List excleList = readExcelContent(filePath);
             // 比较 list 里面的数据
             Set setBox = new HashSet();
-            String str = "";//compileList(excleList, setBox);// 检查数据库数据
+            String str = "";
             if (str != null && !"".equals(str)) {
                 result.put("msg", str + "  请整理完整excle后重新全部导入");
                 result.put("success", false);
                 return new ResponseEntity(result, HttpStatus.OK);
             }
-
             // 保存excle数据
-//            excelContentToOracle(setBox, excleList, imorderNo, stockCode,
-//                    stockName); 入库
-
             result.put("success", true);
         } catch (Exception e) {
             e.printStackTrace();
@@ -131,65 +120,8 @@ public class TestController {
         return new ResponseEntity(result, HttpStatus.OK);
     }
 
-
-    public List readExcelContent(File file, String imorderNo)
+    public List readExcelContent(File file)
             throws FileNotFoundException {
-//        POIFSFileSystem fs = null;
-//        HSSFWorkbook wb = null;
-//        HSSFSheet sheet = null;
-//        HSSFRow row = null;
-//        InputStream is = new FileInputStream(file.toString());
-//        Map<Integer, String> content = new HashMap<Integer, String>();
-//        String str = "";
-//        List list = new ArrayList();
-//        try {
-//            fs = new POIFSFileSystem(is);
-//            wb = new HSSFWorkbook(fs);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        sheet = wb.getSheetAt(0);
-//        // 得到总行数
-//        int rowNum = sheet.getLastRowNum();
-//        row = sheet.getRow(0);
-//        // map.put("imorderNo", imorderNo);
-//        int colNum = row.getPhysicalNumberOfCells();
-//        // 正文内容应该从第二行开始,第一行为表头的标题
-////        BooldExcelVo be = null;
-//        for (int i = 1; i <= rowNum; i++) {
-//            row = sheet.getRow(i);
-//            if (row == null)
-//                continue;
-//            int j = 0;
-//            if (row.getCell((short) j) == null) {
-//                ++j;
-//                break;
-//            }
-//            // 取所有数据如内存 比较处理
-////            be = new BooldExcelVo();
-////            be.setRow(String.valueOf(i));
-//            while (j < colNum) {
-//
-//
-//                if (j == 0) {// 采血包箱编号
-////                    be.setArchivesNo(getCellFormatValue(row.getCell((short) j)) != null
-////                            && !"".equals(getCellFormatValue(row
-////                            .getCell((short) j))) ? getCellFormatValue(
-////                            row.getCell((short) j)).trim() : null);
-//                    // map.put("archivesNo",
-//                    // getCellFormatValue(row.getCell((short) j))!=null &&
-//                    // !"".equals(getCellFormatValue(row.getCell((short) j)) )
-//                    // ?getCellFormatValue(row.getCell((short) j)).trim():null
-//                    // );
-//                }
-//                j++;
-//            }
-//
-////            list.add(be);
-////            be = null;
-//        }
-//        return list;
-
         return null;
     }
 }

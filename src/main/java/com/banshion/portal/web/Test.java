@@ -5,6 +5,8 @@ import com.banshion.portal.web.sys.dao.SysMenuMapper;
 import com.banshion.portal.web.sys.domain.SysMenu;
 import com.banshion.portal.web.sys.service.impl.MenuTreeNode;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -19,13 +21,10 @@ import java.util.*;
 //"file:/WEB-INF/spring-mvc.xml",
 public class Test
 {
-
-    //private static final Logger LOGGER = Logger
-    //        .getLogger(TestUserService.class);
+    private static final Logger log = LoggerFactory.getLogger(Test.class);
 
     @Autowired
     private SysMenuMapper menuDao;
-
 
     @org.junit.Test
     public void testQueryById1() {
