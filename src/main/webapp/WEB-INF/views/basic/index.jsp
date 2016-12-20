@@ -5,6 +5,27 @@
 <html>
 <head>
     <title>基本信息维护</title>
+
+
+
+    <style>
+        <!--
+        .fileload {
+            border-radius: 3px;
+            font-size: 12px;
+            height: 30px;
+            line-height: 1.5;
+            padding: 5px 10px;
+            width: 81%;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+            color: #555;
+
+        }
+        -->
+    </style>
 </head>
 <body>
 <div id='dialog-confirm' class="modal fade">
@@ -79,6 +100,51 @@
     <table id="grid"></table>
     <div id="pager"></div>
 </div>
+
+
+
+<div id='dialog-uplaod' class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">基本信息</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+
+                <div id="alertForUpload" class="alert alert-danger" hidden>
+                    <strong>Warning!</strong>
+                </div>
+                <form id="uploadForm" method="POST" enctype="multipart/form-data" class="form-horizontal">
+
+                    <div class="form-group">
+                        <label class="col-lg-3 col-md-1  control-label" for="impexcel"><span style="color: red">*</span>选择文件:</label>
+                        <div class="col-lg-7 col-md-8">
+                            <input type="text" name="fileName" id="puf" class="fileload" placeholder="请点击浏览选择文件"/>
+                            <input type="button" value="浏览..." style="height:30px;" onclick="javascript:$('#file').click();" />
+                            <input type="file" name="file" id="file" style="display:none" onchange="javascript:$('#puf').val($('#file').val());" />
+                        </div>
+                    </div>
+                    <div class="form-group" id="loading" hidden>
+                        <label class="col-lg-5 col-md-1  control-label" for="impexcel">&nbsp;</label>
+                        <div class="col-lg-7 col-md-5">
+                            <img src="${ctx }/static/file-upload/img/loading.gif" width="32" height="32" style="margin-right:8px;float:left;vertical-align:top;"/>
+                        </div>
+                    </div>
+                </form>
+
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id ='cancel_upload' class="btn btn-default btn-sm" tabindex="1001">取消</button>
+                <button type="button" id ='do_save_upload' class="btn btn-primary btn-sm" tabindex="1000">提交</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
 
 <script type="text/javascript">
     $(function(){
@@ -240,6 +306,22 @@
 
     $("#cancel").click(function(){
         $( "#dialog-confirm" ).modal("hide");
+    });
+
+    $("#impExcel").click(function(){
+        $( "#dialog-uplaod" ).modal({
+            backdrop: 'static'
+        });
+        $( "#do_save_upload").attr("disabled",false);
+    });
+
+    $("#cancel_upload").click(function(){
+        $( "#dialog-uplaod" ).modal("hide");
+    });
+
+    $("#do_save_upload").click(function(){
+        $( "#do_save_upload").attr("disabled",true);
+
     });
 
 </script>
