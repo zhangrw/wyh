@@ -6,6 +6,7 @@
 <html>
 <head>
     <title><sitemesh:title /></title>
+
     <!-- 设置根路径 -->
     <c:set var="ctx" value="${pageContext.request.contextPath}"/>
     <%@ include file="/WEB-INF/common/common-js-style.jsp"%>
@@ -23,6 +24,45 @@
     <meta http-equiv="Expires" content="0" />
 
     <sitemesh:head />
+    <style>
+        /*--select 样式--*/
+        #select{
+            border-radius: 4px;
+            background-color: #f5f5f5;
+            border: 1px solid #cccccc;
+            color: #404040;
+        }
+        #selectWrap{
+            margin: 15px;
+            border-radius: 4px;
+            background-color: #f5f5f5;
+            border: 1px solid #cccccc;
+            color: #404040;
+            margin-bottom: 6px;
+        }
+        .select-main{
+            margin: 2px;
+            height: auto;
+            overflow: hidden;
+            font-size: 14px;
+            background-color: #ffffff;
+            padding: 10px;
+        }
+        .select-main ol li{
+            float: left;
+            margin-right: 15px;
+        }
+        .select-main input[type=checkbox],.select-main input{
+            float: left;
+        }
+        .select-main label{
+            float: left;
+            margin-left: 3px;
+            margin-right: 4px;
+            font-weight: normal;
+
+        }
+    </style>
 </head>
 <body>
 <div id="screenWidth" class="container">
