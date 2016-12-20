@@ -100,49 +100,14 @@
 
         <ul class="nav navbar-nav" id = "backindex">
             <li id="systemManage_nav"><a href="javascript:{}" onclick="goTo('${ctx}/index')"><i class="glyphicon glyphicon-home" title="工作台"></i></a></li>
-                        <%--<li class="dropdown">--%>
-                                <%--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"--%>
-                                   <%--aria-expanded="false">系统管理 <span class="caret"></span></a>--%>
-                                <%--<ul class="dropdown-menu">--%>
-                                    <%--<shiro:hasPermission name="user:add">--%>
-                                        <%--<li id="user_nav"><a href="javascript:{}" onclick="goTo('${ctx}/sys/user');">用户管理</a></li>--%>
-                                    <%--</shiro:hasPermission>--%>
-                                    <%--<shiro:hasPermission name="role:add">--%>
-                                        <%--<li id="role_nav"><a href="javascript:{}" onclick="goTo('${ctx}/sys/role');">角色管理</a></li>--%>
-                                    <%--</shiro:hasPermission>--%>
-                                    <%--<shiro:hasPermission name="permission:add">--%>
-                                        <%--<li id="permissions_nav"><a href="javascript:{}" onclick="goTo('${ctx}/sys/permission');">权限管理</a></li>--%>
-                                    <%--</shiro:hasPermission>--%>
-                                <%--</ul>--%>
-                            <%--</li>--%>
-
-                        <%--<li><a href="javascript:{}">测试一级菜单</a></li>--%>
-
-                        <%--<li class="dropdown">--%>
-                            <%--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"--%>
-                               <%--aria-expanded="false">测试多级菜单 <span class="caret"></span></a>--%>
-                            <%--<ul class="dropdown-menu">--%>
-                                <%--<li><a href="#" >测试</a></li>--%>
-                                <%--<li class="dropdown-submenu">--%>
-                                    <%--<a href="#" >二级菜单 <span ></span></a>--%>
-                                    <%--<ul class="dropdown-menu">--%>
-                                        <%--<li><a href="javascript:{}">三级菜单</a></li>--%>
-
-                                        <%--<li class="dropdown-submenu"><a href="javascript:{}">三级菜单</a>--%>
-                                            <%--<ul class="dropdown-menu">--%>
-                                                <%--<li >--%>
-                                                    <%--<a href="#">四级菜单</a>--%>
-                                                <%--</li>--%>
-                                                <%--<li >--%>
-                                                    <%--<a href="#">四级应该足够了</a>--%>
-                                                <%--</li>--%>
-
-                                            <%--</ul>--%>
-                                        <%--</li>--%>
-                                    <%--</ul>--%>
-                                <%--</li>--%>
-                            <%--</ul>--%>
-                        <%--</li>--%>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                               aria-expanded="false">基础功能<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="javascript:{}" onclick="goTo('${ctx}/basic')" >基本信息维护</a></li>
+                                <li><a href="#" >信息维护</a></li>
+                            </ul>
+                        </li>
                 </ul>
 
             </div>
