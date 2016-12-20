@@ -1,14 +1,18 @@
 package com.banshion.portal.web.index.controller;
 
 import com.banshion.portal.sys.authentication.ShiroUser;
+import com.banshion.portal.util.CommPropertiesConfiguration;
+import com.banshion.portal.util.PasswordUtil;
 import com.banshion.portal.util.Securitys;
 import com.banshion.portal.util.excel.ExcelExportConfig;
 import com.banshion.portal.util.excel.ExcelExportUtil;
 import com.banshion.portal.web.index.dao.TindexUserMapper;
+import com.banshion.portal.web.index.domain.TindexUser;
 import com.banshion.portal.web.sys.dao.SysUserMapper;
 import com.banshion.portal.web.sys.domain.SysUser;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +21,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by Administrator on 2016/12/16.
@@ -43,13 +47,13 @@ public class IndexUserController {
     private SysUserMapper userDao;
 
     @RequestMapping
-    public String index(Model model){
+    public String index(Model model,HttpServletRequest request){
         ShiroUser user = Securitys.getUser();
-        if( user.isAdmin() ){
-            System.out.println(Securitys.getSubject().isPermitted("sys:menu"));
-        }else{
-            System.out.println(Securitys.getSubject().isPermitted("sys:menu"));
-        }
+//        if( user.isAdmin() ){
+//            System.out.println(Securitys.getSubject().isPermitted("sys:menu"));
+//        }else{
+//            System.out.println(Securitys.getSubject().isPermitted("sys:menu"));
+//        }
     return "basic/index";
     }
 
@@ -128,5 +132,171 @@ public class IndexUserController {
                 bos.close();
         }
         return null;
+    }
+
+    @RequestMapping(value="upload", method= RequestMethod.POST)
+    public ResponseEntity impExcel(@RequestParam MultipartFile file, HttpServletRequest request)
+    throws Exception{
+        Map<String, Object> result = new HashMap<String, Object>();
+        long fileSize = file.getSize();
+        if(fileSize > 10240000){
+            result.put("msg", "文件大小不能超过10M!");
+            result.put("success", false);
+            return new ResponseEntity(result, HttpStatus.OK);
+        }
+
+        String proPath = request.getSession().getServletContext().getRealPath("");
+        int index = proPath.lastIndexOf(File.separator) + 1;
+        String ctxPath = proPath.substring(0,index)+"uploadFiles";
+        File dirPath = new File(ctxPath);
+        if (!dirPath.exists()) {
+            dirPath.mkdirs();
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+        String fileName = sdf.format(new Date())+"_"+ Securitys.getUserName()+"_"+new Date().getTime()+".xls";
+//        String fileName =file.getOriginalFilename();
+        File filePath = new File(ctxPath + File.separator + fileName);
+        try {
+            if(!filePath.exists()){
+                filePath.createNewFile();
+            }
+            file.transferTo(filePath);
+            result.put("success", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            if(filePath.isFile()&&filePath.exists()){
+                filePath.delete();
+            }
+            result.put("msg", "上传失败，请联系管理员！");
+            result.put("success", false);
+        }
+        try{
+            List<TindexUser> list = readUserExcel(filePath);
+            SysUser suser;
+            for( TindexUser po : list ){
+                suser = new SysUser();
+                tuserDao.insert(po);
+                suser.setId(po.getId());
+                suser.setLoginname(po.getJobNumber());
+                suser.setUsername(po.getName());
+                byte[] salts = PasswordUtil.getSaltBytes();// 自定义加密串,目前获取8位随即
+                suser.setSalt(PasswordUtil.getEncodeSalts(salts));
+                suser.setPassword(PasswordUtil.getEncodePassWord(po.getJobNumber(),salts));
+                userDao.insert(suser);
+            }
+            result.put("success", true);
+        }catch (Exception e){
+            e.printStackTrace();
+            log.info("用户信息Excel上传后处理异常："+e.getMessage());
+            result.put("msg", "Excel解析异常,请检查Excel格式和数据正确性！");
+            result.put("success", false);
+        }
+        return new ResponseEntity(result, HttpStatus.OK);
+    }
+
+    public List<TindexUser> readUserExcel(File file)
+            throws FileNotFoundException {
+        POIFSFileSystem fs = null;
+        HSSFWorkbook wb = null;
+        HSSFSheet sheet = null;
+        HSSFRow row = null;
+        InputStream is = new FileInputStream(file.toString());
+        Map<Integer, String> content = new HashMap<Integer, String>();
+        String str = "";
+        List<TindexUser> list = new ArrayList<TindexUser>();
+        try {
+            fs = new POIFSFileSystem(is);
+            wb = new HSSFWorkbook(fs);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        sheet = wb.getSheetAt(0);
+        // 得到总行数
+        int rowNum = sheet.getLastRowNum();
+        row = sheet.getRow(0);
+        int colNum = row.getPhysicalNumberOfCells();
+        // 正文内容应该从第二行开始,第一行为表头的标题
+        TindexUser user;
+        for (int i = 1; i <= rowNum; i++){
+             user = new TindexUser();
+            row = sheet.getRow(i);
+            if (row == null)
+                continue;
+            int j = 0;
+            if (row.getCell((short) j) == null) {
+                ++j;
+                break;
+            }
+            // 取所有数据如内存 比较处理
+            user.setId(UUID.randomUUID().toString());
+            String cellValue;
+            while (j < colNum) {
+                cellValue = getCellFormatValue(row.getCell((short)j));
+                cellValue = StringUtils.isNotBlank(cellValue) ? cellValue : null;
+                switch(j) //name sex job_number id_number bank_number bz
+                {
+                    case 0 : user.setName(cellValue); break;
+                    case 1 : user.setSex(cellValue.indexOf("男") != -1 ? 1 : 2 ); break;
+                    case 2 : user.setJobNumber(cellValue); break;
+                    case 3 : user.setIdNumber(cellValue); break;
+                    case 4 : user.setBankNumber(cellValue); break;
+                    case 5 : user.setBz(cellValue); break;
+                    default: break;
+                }
+                j++;
+            }
+            list.add(user);
+        }
+        return list;
+    }
+
+    /**
+     * 根据HSSFCell类型设置数据
+     *
+     * @param cell
+     * @return
+     */
+    private String getCellFormatValue(HSSFCell cell) {
+        String cellvalue = null;
+        if (cell != null) {
+            // 判断当前Cell的Type
+            switch (cell.getCellType()) {
+                // 如果当前Cell的Type为NUMERIC
+                case HSSFCell.CELL_TYPE_NUMERIC:{
+                    cellvalue = String.valueOf(cell.getNumericCellValue());
+                    break;
+                }
+                case HSSFCell.CELL_TYPE_FORMULA: {
+                    // 判断当前的cell是否为Date
+                    if (HSSFDateUtil.isCellDateFormatted(cell)){
+                        // 如果是Date类型则，转化为Data格式
+                        // 方法1：这样子的data格式是带时分秒的：2011-10-12 0:00:00
+                        // cellvalue = cell.getDateCellValue().toLocaleString();
+
+                        // 方法2：这样子的data格式是不带带时分秒的：2011-10-12
+                        Date date = cell.getDateCellValue();
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        cellvalue = sdf.format(date);
+                    }
+                    // 如果是纯数字
+                    else {
+                        // 取得当前Cell的数值
+                        cellvalue = String.valueOf(cell.getNumericCellValue());
+                    }
+                    break;
+                }
+                // 如果当前Cell的Type为STRIN
+                case HSSFCell.CELL_TYPE_STRING:
+                    // 取得当前的Cell字符串
+                    cellvalue = cell.getRichStringCellValue().getString();
+                    break;
+                // 默认的Cell值
+                default:
+                    cellvalue = null;
+            }
+        } else {
+            cellvalue = null;
+        }
+        return cellvalue;
     }
 }

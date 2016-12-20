@@ -101,8 +101,6 @@
     <div id="pager"></div>
 </div>
 
-
-
 <div id='dialog-uplaod' class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -123,13 +121,13 @@
                         <div class="col-lg-7 col-md-8">
                             <input type="text" name="fileName" id="puf" class="fileload" placeholder="请点击浏览选择文件"/>
                             <input type="button" value="浏览..." style="height:30px;" onclick="javascript:$('#file').click();" />
-                            <input type="file" name="file" id="file" style="display:none" onchange="javascript:$('#puf').val($('#file').val());" />
+                            <input type="file" name="file" accept=".xls" id="file" style="display:none" onchange="javascript:$('#puf').val($('#file').val());" />
                         </div>
                     </div>
                     <div class="form-group" id="loading" hidden>
                         <label class="col-lg-5 col-md-1  control-label" for="impexcel">&nbsp;</label>
                         <div class="col-lg-7 col-md-5">
-                            <img src="${ctx }/static/file-upload/img/loading.gif" width="32" height="32" style="margin-right:8px;float:left;vertical-align:top;"/>
+                            <img src="${ctx }/static/bootstrap/file-input/img/loading-sm.gif" width="32" height="32" style="margin-right:8px;float:left;vertical-align:top;"/>
                         </div>
                     </div>
                 </form>
@@ -143,8 +141,6 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-
 
 <script type="text/javascript">
     $(function(){
@@ -324,7 +320,21 @@
 
     $("#do_save_upload").click(function(){
         $( "#do_save_upload").attr("disabled",true);
-
+        $("#uploadForm").ajaxSubmit({
+            url:"${ctx}/basic/upload",
+            type:"POST",
+//            dataType:"json",
+            success:function(data){
+                if(data.success){
+                    $('#dialog-uplaod').modal('hide');
+                    $("#documentgrid").setGridParam({postData:{page: 1}}).trigger("reloadGrid");
+                }else{
+                    $("#loading").hide();
+                    openError(data.msg,2000,$("#alertForUpload"));
+                    $("#do_save").attr("disabled",false);
+                }
+            }
+        });
     });
 
 </script>

@@ -134,60 +134,62 @@ public class TestController {
 
     public List readExcelContent(File file, String imorderNo)
             throws FileNotFoundException {
-        POIFSFileSystem fs = null;
-        HSSFWorkbook wb = null;
-        HSSFSheet sheet = null;
-        HSSFRow row = null;
-        InputStream is = new FileInputStream(file.toString());
-        Map<Integer, String> content = new HashMap<Integer, String>();
-        String str = "";
-        List list = new ArrayList();
-        try {
-            fs = new POIFSFileSystem(is);
-            wb = new HSSFWorkbook(fs);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        sheet = wb.getSheetAt(0);
-        // 得到总行数
-        int rowNum = sheet.getLastRowNum();
-        row = sheet.getRow(0);
-        // map.put("imorderNo", imorderNo);
-        int colNum = row.getPhysicalNumberOfCells();
-        // 正文内容应该从第二行开始,第一行为表头的标题
-//        BooldExcelVo be = null;
-        for (int i = 1; i <= rowNum; i++) {
-            row = sheet.getRow(i);
-            if (row == null)
-                continue;
-            int j = 0;
-            if (row.getCell((short) j) == null) {
-                ++j;
-                break;
-            }
-            // 取所有数据如内存 比较处理
-//            be = new BooldExcelVo();
-//            be.setRow(String.valueOf(i));
-            while (j < colNum) {
+//        POIFSFileSystem fs = null;
+//        HSSFWorkbook wb = null;
+//        HSSFSheet sheet = null;
+//        HSSFRow row = null;
+//        InputStream is = new FileInputStream(file.toString());
+//        Map<Integer, String> content = new HashMap<Integer, String>();
+//        String str = "";
+//        List list = new ArrayList();
+//        try {
+//            fs = new POIFSFileSystem(is);
+//            wb = new HSSFWorkbook(fs);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        sheet = wb.getSheetAt(0);
+//        // 得到总行数
+//        int rowNum = sheet.getLastRowNum();
+//        row = sheet.getRow(0);
+//        // map.put("imorderNo", imorderNo);
+//        int colNum = row.getPhysicalNumberOfCells();
+//        // 正文内容应该从第二行开始,第一行为表头的标题
+////        BooldExcelVo be = null;
+//        for (int i = 1; i <= rowNum; i++) {
+//            row = sheet.getRow(i);
+//            if (row == null)
+//                continue;
+//            int j = 0;
+//            if (row.getCell((short) j) == null) {
+//                ++j;
+//                break;
+//            }
+//            // 取所有数据如内存 比较处理
+////            be = new BooldExcelVo();
+////            be.setRow(String.valueOf(i));
+//            while (j < colNum) {
+//
+//
+//                if (j == 0) {// 采血包箱编号
+////                    be.setArchivesNo(getCellFormatValue(row.getCell((short) j)) != null
+////                            && !"".equals(getCellFormatValue(row
+////                            .getCell((short) j))) ? getCellFormatValue(
+////                            row.getCell((short) j)).trim() : null);
+//                    // map.put("archivesNo",
+//                    // getCellFormatValue(row.getCell((short) j))!=null &&
+//                    // !"".equals(getCellFormatValue(row.getCell((short) j)) )
+//                    // ?getCellFormatValue(row.getCell((short) j)).trim():null
+//                    // );
+//                }
+//                j++;
+//            }
+//
+////            list.add(be);
+////            be = null;
+//        }
+//        return list;
 
-
-                if (j == 0) {// 采血包箱编号
-//                    be.setArchivesNo(getCellFormatValue(row.getCell((short) j)) != null
-//                            && !"".equals(getCellFormatValue(row
-//                            .getCell((short) j))) ? getCellFormatValue(
-//                            row.getCell((short) j)).trim() : null);
-                    // map.put("archivesNo",
-                    // getCellFormatValue(row.getCell((short) j))!=null &&
-                    // !"".equals(getCellFormatValue(row.getCell((short) j)) )
-                    // ?getCellFormatValue(row.getCell((short) j)).trim():null
-                    // );
-                }
-                j++;
-            }
-
-//            list.add(be);
-//            be = null;
-        }
-        return list;
+        return null;
     }
 }

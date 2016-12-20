@@ -59,6 +59,12 @@
             </props>
         </property>
     </bean>
+
+    <!-- 上传文件拦截，设置最大上传文件大小   10M=10*1024*1024(B)=10485760 bytes -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="10485760" />
+    </bean>
+
     <!-- 返回json 需要导入 fastjson.jar包 -->
     <mvc:annotation-driven>
         <mvc:message-converters register-defaults="false">
@@ -76,12 +82,10 @@
     </mvc:annotation-driven>
 
     <!-- 支持 Shiro对Controller的方法级AOP安全控制 begin -->
-    <bean
-            class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
         <property name="proxyTargetClass" value="true" />
     </bean>
-    <bean
-            class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
         <property name="securityManager" ref="securityManager"></property>
     </bean>
     <!--end-->
