@@ -16,7 +16,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Created by zhang.rw on 16-4-9.
  */
 @Controller
 @RequestMapping("/login")
