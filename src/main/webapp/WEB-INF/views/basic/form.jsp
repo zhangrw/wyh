@@ -10,18 +10,22 @@
 <body>
 <form id="shirouser" class="form-horizontal" action="${ctx}/basic/save">
     <div class="form-group">
+        <input name="id" value="${shirouser.id}" hidden/>
         <label class="col-lg-3 col-md-3  control-label" for="loginName"><span style="color: red">*</span>登录名：</label>
         <div class="col-lg-4 col-md-4">
             <input type="text" id="loginName"  style="width: 150px" name="loginName" class="form-control input-sm" value="${shirouser.loginName}" placeholder="登录名" required>
         </div>
         <c:if test="${not empty shirouser.id}">
         <div class="col-lg-5 col-md-5">
-                <input type="checkbox" name="checkbox" onclick="changepwd()"/> 编辑登录密码
+                <input type="checkbox" name="checkbox" onclick="changepwd()" title="勾选开启编辑密码功能"/> 编辑登录密码
         </div>
         </c:if>
     </div>
-    <div id="cgepwd"         <c:if test="${not empty shirouser.id}">
-    style="display: none" </c:if>>
+    <div id="cgepwd"
+            <c:if test="${not empty shirouser.id}">
+            style="display: none"
+            </c:if>
+    >
         <div class="form-group">
             <label class="col-lg-3 col-md-3  control-label" for="password"><span
                     style="color: red">*</span>登录密码：</label>
@@ -37,57 +41,57 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="col-lg-3 col-md-3  control-label" for="username"><span style="color: red">*</span>用户名：</label>
+        <label class="col-lg-3 col-md-3  control-label" for="name"><span style="color: red">*</span>用户名：</label>
         <div class="col-lg-5 col-md-5 ">
-            <input type="text" id="username" style="width: 150px" name="username" value="${shirouser.name }" class="form-control input-sm" placeholder="输入用户名称" required>
-            <%--<span id="lccCode3" ></span>--%>
+            <input type="text" id="name" style="width: 150px" name="name" value="${shirouser.name }" class="form-control input-sm" placeholder="输入用户名称" required>
         </div>
     </div>
     <div class="form-group">
         <label class="col-lg-3 col-md-3  control-label" for="sex"><span style="color: red">*</span>性别：</label>
         <div class="col-lg-5 col-md-5 ">
-            <%--<input type="text" id="sex" style="width: 150px" name="sex" value="${shirouser.sex}" class="form-control input-sm" placeholder="选择性别" required>--%>
-            <select id="sex" name="sex" class="col-lg-5 col-md-5 ">
-                <option id="1" <c:if test="${shirouser.sex == 1}">selected</c:if> >男</option>
-                <option id="2" <c:if test="${shirouser.sex == 2}">selected</c:if> >女</option>
+            <select id="sex" name="sex" class="col-lg-5 col-md-5 form-control input-sm">
+                <option value="1" <c:if test="${shirouser.sex == 1}">selected</c:if> >男</option>
+                <option value="2" <c:if test="${shirouser.sex == 2}">selected</c:if> >女</option>
             </select>
         </div>
     </div>
     <div class="form-group">
-        <label class="col-lg-3 col-md-3  control-label" for="username"><span style="color: red">*</span>工号：</label>
+        <label class="col-lg-3 col-md-3  control-label" for="jobNumber"><span style="color: red">*</span>工号：</label>
         <div class="col-lg-6 col-md-6 ">
-            <input type="text" id="jognumber" name="jobNumber" value="${shirouser.jobNumber}" class="form-control input-sm" placeholder="输入工号" required>
+            <input type="text" id="jobNumber" name="jobNumber" value="${shirouser.jobNumber}" class="form-control input-sm" placeholder="输入工号" required>
         </div>
     </div>
     <div class="form-group">
-        <label class="col-lg-3 col-md-3  control-label" for="idNumber"><span style="color: red">*</span>身份证号：</label>
+        <label class="col-lg-3 col-md-3  control-label" for="idNumber">身份证号：</label>
         <div class="col-lg-6 col-md-6 ">
             <input type="text" id="idNumber" name="idNumber" value="${shirouser.idNumber}" class="form-control input-sm" placeholder="输入身份证号" required>
         </div>
     </div>
     <div class="form-group">
-        <label class="col-lg-3 col-md-3  control-label" for="bankNumber"><span style="color: red">*</span>银行卡号：</label>
+        <label class="col-lg-3 col-md-3  control-label" for="bankNumber">银行卡号：</label>
         <div class="col-lg-6 col-md-6 ">
             <input type="text" id="bankNumber" name="bankNumber" value="${shirouser.bankNumber}" class="form-control input-sm" placeholder="输入银行卡号" required>
         </div>
     </div>
     <div class="form-group">
-        <label class="col-lg-3 col-md-3  control-label" for="deptName"><span style="color: red">*</span>所属部门：</label>
-        <div class="col-lg-5 col-md-5 ">
-            <input type="text" id="deptName" style="width: 150px" name="deptName" value="${shirouser.deptName}" class="form-control input-sm" placeholder="选择所属部门" required>
+        <label class="col-lg-3 col-md-3  control-label" for="deptName">所属部门：</label>
+        <div class="col-lg-6 col-md-6 ">
+            <input type="text" id="deptName" name="deptName" value="${shirouser.deptName}" class="form-control input-sm" placeholder="选择所属部门" required>
+
+            <div id="deptZtree" class="tree-select">
+                <div id="menu_ztree" class="ztree" style="height:190px;overflow-y:scroll;" ></div>
+            </div>
+            <input id="deptId" name="deptId" value="${shirouser.deptId}" hidden/>
         </div>
     </div>
     <div class="form-group">
-        <label class="col-lg-3 col-md-3  control-label" for="bz"><span style="color: red">*</span>备注信息：</label>
+        <label class="col-lg-3 col-md-3  control-label" for="bz">备注信息：</label>
         <div class="col-lg-9 col-md-9 ">
-            <%--<input type="text" id="bz" style="width: 150px" name="bz" value="${shirouser.bz}" class="form-control input-sm" placeholder="输入银行卡号" >--%>
             <textarea  id="bz" style="width: 95%" name="bz">${shirouser.bz}</textarea>
         </div>
     </div>
 
 </form>
-
-
 
 <script type="text/javascript">
     //密码和确认密码输入框不能输入空格
@@ -114,32 +118,49 @@
             name:{
                 required:true
             },
-            <c:if test="${empty shirouser.id}">
+            <%--<c:if test="${empty shirouser.id}">--%>
             loginName:{
                 required:true,
                 maxlength:30,
                 minlength:2,
                 remote:{
                     type:"POST",
-                    url:'${ctx}/user/checkloginnameExists',
+                    url:'${ctx}/sys/user/checkloginnameExists',
                     dataType:'json',
                     data:{
-                        loginName:function(){
-                            var l_n = $("#loginName").val();
-                            return l_n;
+                        "loginname":function(){
+                            return $("#loginName").val();
+                        },
+                        "id": function(){
+                            return $("#id").val();
                         }
                     },
                     dataFilter: function(data) {
                         data= eval("("+data+")");
                         if(data){
-                            if(!data.result){
-                                return true;
-                            }
-                            return false;
+                            return !data.result;
                         }
                         return false;
                     }
                 }
+            },
+            <%--</c:if>--%>
+            jobNumber:{
+                required:true,
+                maxlength:25,
+                minlength:4
+            },
+            bankNumber:{
+                maxlength:25,
+                minlength:12
+            },
+            idNumber:{
+                maxlength:25,
+                minlength:12
+            },
+            bz:{
+                maxlength:200,
+                minlength:4
             },
             password:{
                 required:true,
@@ -151,35 +172,39 @@
                 maxlength:30,
                 minlength:6,
                 equalTo: "#password"
-            },
-            </c:if>
-            //organization:{
-            //	required:true
-            //},
-//            email:{
-//                email:true,
-//                maxlength:30,
-//                minlength:4
-//            },
-//            status:{
-//                required:true
-//            },
-            bz:{
-                maxlength:200,
-                minlength:4
             }
         },
         messages:{
             name:{
                 required:'用户名不能为空'
             },
-            <c:if test="${empty shirouser.id}">
+            <%--<c:if test="${empty shirouser.id}">--%>
             loginName:{
                 required:'登录名不能为空',
                 maxlength:'不能超过{0}个字符',
                 minlength:'不能少于{0}个字符',
                 remote:'登录名已存在'
             },
+
+            <%--</c:if>--%>
+            jobNumber:{
+                required:'工号不能为空',
+                maxlength:'不能超过{0}个字符',
+                minlength:'不能少于{0}个字符'
+            },
+            bankNumber:{
+                maxlength:'不能超过{0}个字符',
+                minlength:'不能少于{0}个字符'
+            },
+            idNumber:{
+                maxlength:'不能超过{0}个字符',
+                minlength:'不能少于{0}个字符'
+            },
+            bz:{
+                maxlength:'不能超过{0}个字符',
+                minlength:'不能少于{0}个字符'
+            }
+            ,
             password:{
                 required:'登录密码不能为空',
                 maxlength:$.format('不能超过{0}个字符'),
@@ -190,32 +215,74 @@
                 maxlength:$.format('不能超过{0}个字符'),
                 minlength:$.format('不能少于{0}个字符'),
                 equalTo: "两次密码输入不一致"
-            },
-            </c:if>
-            //organization:{
-            //	required:'请选择组织机构'
-            //},
-//            email:{
-//                maxlength:$.format('不能超过{0}个字符'),
-//                minlength:$.format('不能少于{0}个字符')
-//            },
-//            status:{
-//                required:'请选择用户状态'
-//            },
-            bz:{
-                maxlength:'不能超过{0}个字符',
-                minlength:'不能少于{0}个字符'
             }
         }
     });
 
-    function changepwd(){
+    function changepwd(){debugger
         if( $("input[name=checkbox]")[0].checked ){
             $("#cgepwd")[0].style.display="block"
+
+            // 动态设置js validate的校验规则
+            $("#password").rules("add",
+                    {
+                        required:true,
+                        maxlength:30,
+                        minlength:6
+                    });
+            $("#password_again").rules("add",
+                    {
+                        required:true,
+                        maxlength:30,
+                        minlength:6,
+                        equalTo: "#password"
+                    });
         }else{
             $("#cgepwd")[0].style.display="none"
+            // 动态设置js validate的校验规则
+            $("#password").rules("remove");
+            $("#password_again").rules("remove");
         }
     }
+
+
+    $("#deptName").click(function(e){
+        $("#deptZtree").css('width',$(this).outerWidth());
+        $("#deptZtree").toggle();
+    });
+
+    var setting = {
+        async: {
+            enable: true,
+            type:"post",
+            url:"${ctx}/sys/dept/getallDept"
+        },
+        data: {
+            key:{
+                name: "name"
+            },
+            simpleData: {
+                enable: true,
+                idKey: "id",
+                pIdKey: "parentId",
+                rootPId: 0
+            }
+        }
+        ,callback: {
+            onAsyncSuccess: onAsyncSuccess,
+            onClick:clickNode
+        }
+    };
+    function onAsyncSuccess(event, treeId, treeNode, msg) {
+        var treeObj = $.fn.zTree.getZTreeObj(treeId);
+        treeObj.expandAll(true);
+    }
+    function clickNode(event, treeId, treeNode){
+            $("#deptName").val(treeNode.name);
+            $("#deptId").val(treeNode.id);
+            $("#deptZtree").toggle();
+    }
+    $.fn.zTree.init($("#menu_ztree"), setting);
 </script>
 </body>
 </html>

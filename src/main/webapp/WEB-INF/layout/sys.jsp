@@ -154,7 +154,7 @@
         <sitemesh:body />
     </div>
     <footer class="footer" style="text-align: center;clear:both;">
-        Copyright © 2016-2017.  Banshion.  All rights reserved
+        Copyright © 2016-2017.  公司运维.  All rights reserved
     </footer>
 </div>
 </body>

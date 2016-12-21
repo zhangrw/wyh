@@ -96,6 +96,10 @@
 <div id="alert" class="alert alert-danger" hidden>
     <strong>Warning!</strong>
 </div>
+<div id="message" class="alert alert-success" hidden>
+    <button data-dismiss="alert" class="close">&times;</button>
+    <span id="messageSpanId"></span>
+</div>
 <div id="jqgrid">
     <table id="grid"></table>
     <div id="pager"></div>
@@ -304,6 +308,38 @@
         $( "#dialog-confirm" ).modal("hide");
     });
 
+
+    $("#do_save").click(function(){
+        $("#shirouser")[0].action = "${ctx}/basic/save";
+
+        var myform = $("#dialog-confirm").find("form").get(0);
+        if(!jQuery(myform).validate().form())
+        {
+            return ;
+        }
+
+        $("#shirouser").ajaxSubmit({
+            url:"${ctx}/basic/save",
+            type:"POST",
+            dataType:"json",
+            success:function(data){
+                $("#messageSpanId").text(data.msg);
+                if(data.success){
+                    $('#dialog-confirm').modal('hide');
+                    $("#grid").setGridParam({postData:{page: 1}}).trigger("reloadGrid");
+                    $("#message").addClass('alert-success').slideToggle(1000);
+                    window.setTimeout(function() {
+                        $('#message').slideToggle(1000);
+                    }, 2000);
+                }else{
+                    $("#loading").hide();
+                    openError(data.msg,2000,$("#alertForUpload"));
+                    $("#do_save").attr("disabled",false);
+                }
+            }
+        });
+    });
+
     $("#expExcel").click(function(){
         window.open("${ctx}/basic/export")
     });
@@ -327,7 +363,7 @@
             success:function(data){
                 if(data.success){
                     $('#dialog-uplaod').modal('hide');
-                    $("#documentgrid").setGridParam({postData:{page: 1}}).trigger("reloadGrid");
+                    $("#grid").setGridParam({postData:{page: 1}}).trigger("reloadGrid");
                 }else{
                     $("#loading").hide();
                     openError(data.msg,2000,$("#alertForUpload"));
@@ -335,6 +371,11 @@
                 }
             }
         });
+    });
+
+
+    $("#downExcel").click(function(){
+        window.open("${ctx}/basic/downTemplete?name=user");
     });
 
 </script>

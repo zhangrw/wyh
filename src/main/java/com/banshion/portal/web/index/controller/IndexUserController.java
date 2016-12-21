@@ -4,12 +4,17 @@ import com.banshion.portal.sys.authentication.ShiroUser;
 import com.banshion.portal.util.CommPropertiesConfiguration;
 import com.banshion.portal.util.PasswordUtil;
 import com.banshion.portal.util.Securitys;
+import com.banshion.portal.util.domain.BaseFilter;
 import com.banshion.portal.util.excel.ExcelExportConfig;
 import com.banshion.portal.util.excel.ExcelExportUtil;
 import com.banshion.portal.web.index.dao.TindexUserMapper;
 import com.banshion.portal.web.index.domain.TindexUser;
 import com.banshion.portal.web.sys.dao.SysUserMapper;
 import com.banshion.portal.web.sys.domain.SysUser;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.sun.tools.javac.util.BaseFileManager;
+import org.apache.commons.jexl2.UnifiedJEXL;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -19,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -59,10 +65,12 @@ public class IndexUserController {
 
     @RequestMapping("getdata")
     @ResponseBody
-    public List<ShiroUser> getData(){
+    public List<ShiroUser> getData(BaseFilter filter){
         if( Securitys.isAdmin() ){
-            List<ShiroUser> list = userDao.getShiroUser();
-            return list;
+            PageHelper.startPage(filter.getPage(),filter.getRows());
+//            List<ShiroUser> list = userDao.getShiroUser();
+            Page<ShiroUser> list2 = (Page<ShiroUser>)userDao.getShiroUser();
+            return list2;
         }else{
         List<ShiroUser> list  = new ArrayList<ShiroUser>();
         list.add(Securitys.getUser());
@@ -84,11 +92,60 @@ public class IndexUserController {
     }
 
     @RequestMapping("save")
-    public @ResponseBody ResponseEntity<?> save(ShiroUser shiroUser){
+    @Transactional
+    public @ResponseBody ResponseEntity<?> save(ShiroUser shiroUser,String checkbox ,String password){
         Map<String,Object> result = new HashMap<String,Object>();
-
-
-
+        try{
+            if( StringUtils.isNoneBlank(shiroUser.getId()) ){ //更新
+                SysUser suer = new SysUser();
+                suer.setId(shiroUser.getId());
+                suer.setLoginname(shiroUser.getLoginName());
+                suer.setUsername(shiroUser.getName());
+                if(StringUtils.isNoneBlank(checkbox) && StringUtils.isNotBlank(password)){
+                    byte[] salts = PasswordUtil.getSaltBytes();// 自定义加密串,目前获取8位随机
+                    suer.setSalt(PasswordUtil.getEncodeSalts(salts));
+                    suer.setPassword(PasswordUtil.getEncodePassWord(password,salts));
+                }
+                userDao.updateByPrimaryKeySelective(suer);
+                TindexUser tuser = new TindexUser();
+                tuser.setId(shiroUser.getId());
+                tuser.setName(shiroUser.getName());
+                tuser.setSex(shiroUser.getSex());
+                tuser.setJobNumber(shiroUser.getJobNumber());
+                tuser.setIdNumber(shiroUser.getIdNumber());
+                tuser.setBankNumber(shiroUser.getBankNumber());
+                tuser.setBz(shiroUser.getBz());
+                tuser.setDeptId(shiroUser.getDeptId());
+                tuserDao.updateByPrimaryKeySelective(tuser);
+            }else{ // 新增
+                String newId = UUID.randomUUID().toString();
+                SysUser suer = new SysUser();
+                suer.setId(newId);
+                suer.setLoginname(shiroUser.getLoginName());
+                suer.setUsername(shiroUser.getName());
+                byte[] salts = PasswordUtil.getSaltBytes();// 自定义加密串,目前获取8位随机
+                suer.setSalt(PasswordUtil.getEncodeSalts(salts));
+                suer.setPassword(PasswordUtil.getEncodePassWord(password,salts));
+                userDao.insert(suer);
+                TindexUser tuser = new TindexUser();
+                tuser.setId(newId);
+                tuser.setName(shiroUser.getName());
+                tuser.setSex(shiroUser.getSex());
+                tuser.setJobNumber(shiroUser.getJobNumber());
+                tuser.setIdNumber(shiroUser.getIdNumber());
+                tuser.setBankNumber(shiroUser.getBankNumber());
+                tuser.setBz(shiroUser.getBz());
+                tuser.setDeptId(shiroUser.getDeptId());
+                tuserDao.insert(tuser);
+            }
+            result.put("success",true);
+            result.put("msg","数据保存成功!");
+        }catch (Exception e)
+        {
+            result.put("success",false);
+            result.put("msg","数据保存异常，请刷新页面重试或联系系统管理员!");
+            log.error("用户数据新增或更新异常："+e.getMessage());
+        }
         return new ResponseEntity(result, HttpStatus.OK);
     }
 
@@ -298,5 +355,43 @@ public class IndexUserController {
             cellvalue = null;
         }
         return cellvalue;
+    }
+
+    @RequestMapping("downTemplete")
+    public void downTempletes(
+            @RequestParam(value = "name",defaultValue = "",required = false)String name,
+            HttpServletRequest request,HttpServletResponse response)
+    throws Exception{
+        request.setCharacterEncoding("utf-8");
+
+        String srcPath = request.getSession().getServletContext().getRealPath("/")+"download";
+
+        if( "user".equals(name) || StringUtils.isBlank(name) ){ // 下载用户信息导入Excel模板
+            File file = new File(srcPath+File.separator+"userImpTemplete.xls");
+            if( file == null ||  !file.exists() ){
+                log.error("用户信息模板下载失败,文件未找到");
+                return;
+            }
+            response.setContentType("application/x-msdownload;");
+            response.setHeader("Content-disposition", "attachment; filename="
+                    + new String("用户基本信息导入模板.xls".getBytes("utf-8"), "ISO8859-1"));
+            try {
+                InputStream inputStream = new FileInputStream(file);
+                OutputStream os = response.getOutputStream();
+                byte[] b = new byte[2048];
+                int length;
+                while ((length = inputStream.read(b)) > 0) {
+                    os.write(b, 0, length);
+                }
+                os.close();
+                inputStream.close();
+            }catch (Exception e){
+
+            }
+
+        }
+
+
+
     }
 }
