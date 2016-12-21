@@ -9,6 +9,7 @@ import com.banshion.portal.util.excel.ExcelExportConfig;
 import com.banshion.portal.util.excel.ExcelExportUtil;
 import com.banshion.portal.web.index.dao.TindexUserMapper;
 import com.banshion.portal.web.index.domain.TindexUser;
+import com.banshion.portal.web.index.filter.UserFilter;
 import com.banshion.portal.web.sys.dao.SysUserMapper;
 import com.banshion.portal.web.sys.domain.SysUser;
 import com.github.pagehelper.Page;
@@ -54,22 +55,16 @@ public class IndexUserController {
 
     @RequestMapping
     public String index(Model model,HttpServletRequest request){
-        ShiroUser user = Securitys.getUser();
-//        if( user.isAdmin() ){
-//            System.out.println(Securitys.getSubject().isPermitted("sys:menu"));
-//        }else{
-//            System.out.println(Securitys.getSubject().isPermitted("sys:menu"));
-//        }
+        model.addAttribute("isAdmin",Securitys.isAdmin());
     return "basic/index";
     }
 
     @RequestMapping("getdata")
     @ResponseBody
-    public List<ShiroUser> getData(BaseFilter filter){
+    public List<ShiroUser> getData(UserFilter filter){
         if( Securitys.isAdmin() ){
             PageHelper.startPage(filter.getPage(),filter.getRows());
-//            List<ShiroUser> list = userDao.getShiroUser();
-            Page<ShiroUser> list2 = (Page<ShiroUser>)userDao.getShiroUser();
+            Page<ShiroUser> list2 = (Page<ShiroUser>)userDao.getShiroUser(filter);
             return list2;
         }else{
         List<ShiroUser> list  = new ArrayList<ShiroUser>();
@@ -165,7 +160,7 @@ public class IndexUserController {
 
 
     @RequestMapping(value = "export")
-    public ModelAndView export(HttpServletRequest request, HttpServletResponse response)
+    public ModelAndView export(HttpServletRequest request, HttpServletResponse response,UserFilter filter)
     throws  Exception{
         request.setCharacterEncoding("utf-8");
         java.io.BufferedOutputStream bos = null;
@@ -173,7 +168,10 @@ public class IndexUserController {
             response.setContentType("application/x-msdownload;");
             response.setHeader("Content-disposition", "attachment; filename="
                     + new String("用户基本信息.xls".getBytes("utf-8"), "ISO8859-1"));
-            List<Map<String,Object>> list =  userDao.exportUser();
+            // 对可能乱码字段进行转码处理
+            filter.setName(java.net.URLDecoder.decode(filter.getName(),"UTF-8"));
+            filter.setLoginName(java.net.URLDecoder.decode(filter.getLoginName(),"UTF-8"));
+            List<Map<String,Object>> list =  userDao.exportUser(filter);
             bos = new BufferedOutputStream(response.getOutputStream());
             HSSFWorkbook workbook = new HSSFWorkbook();
             String[] titleArr = {"部门名称","姓名","性别","工号","身份证号","银行卡号","备注信息"};

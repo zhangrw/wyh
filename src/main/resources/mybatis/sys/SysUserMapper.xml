@@ -37,6 +37,27 @@
         <if test='id != null and id != "" '>
           and su.id = #{id}
         </if>
+      <if test='name != null and name != "" '>
+        and tu.name like concat('%',#{name},'%')
+      </if>
+      <if test='jobNumber != null and jobNumber != "" '>
+        and tu.job_number like concat('%',#{jobNumber},'%')
+      </if>
+      <if test='idNumber != null and idNumber != "" '>
+        and tu.id_number like concat('%',#{idNumber},'%')
+      </if>
+      <if test='loginName != null and loginName != "" '>
+        and su.loginname like  concat('%',#{loginName},'%')
+      </if>
+      <if test='sex != null and sex != "" '>
+        and tu.sex = #{sex}
+      </if>
+      <if test='deptId != null and deptId != "" '>
+        and tu.dept_Id = #{deptId}
+      </if>
+      <if test='bankNumber != null and bankNumber != "" '>
+        and tu.bank_number like concat('%',#{bankNumber},'%')
+      </if>
     </select>
 
   <select id="exportUser" resultType="map">
@@ -54,6 +75,27 @@
     where 1=1
     <if test='id != null and id != "" '>
       and su.id = #{id}
+    </if>
+    <if test='name != null and name != "" '>
+      and tu.name like concat('%',#{name},'%')
+    </if>
+    <if test='jobNumber != null and jobNumber != "" '>
+      and tu.job_number like concat('%',#{jobNumber},'%')
+    </if>
+    <if test='idNumber != null and idNumber != "" '>
+      and tu.id_number like concat('%',#{idNumber},'%')
+    </if>
+    <if test='loginName != null and loginName != "" '>
+      and su.loginname like  concat('%',#{loginName},'%')
+    </if>
+    <if test='sex != null and sex != "" '>
+      and tu.sex = #{sex}
+    </if>
+    <if test='deptId != null and deptId != "" '>
+      and tu.dept_Id = #{deptId}
+    </if>
+    <if test='bankNumber != null and bankNumber != "" '>
+      and tu.bank_number like concat('%',#{bankNumber},'%')
     </if>
   </select>
 
@@ -288,10 +330,12 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
   
-  <select id="selectByLoginName" parameterType="string" resultMap="BaseResultMap">
+  <select id="selectByLoginName" resultMap="BaseResultMap">
 
     select * from sys_user where loginname = #{loginname,jdbcType=VARCHAR}
-
+    <if test="id != null and id!=''" >
+      and id != #{id}
+    </if>
   </select>
 
 

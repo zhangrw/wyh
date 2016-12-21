@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService
 
     public String save(SysUser user)
     {
-        SysUser oldUser = sysusermapper.selectByLoginName(user.getLoginname());
+        SysUser oldUser = sysusermapper.selectByLoginName(user.getLoginname(),user.getId());
         if (oldUser != null) {
             throw new ServiceException("已存在相同登录名");
         }
@@ -111,7 +111,7 @@ public class UserServiceImpl implements UserService
         SysUser user = null;
         try
         {
-            user = sysusermapper.selectByLoginName(loginname.trim());
+            user = sysusermapper.selectByLoginName(loginname.trim(),id);
         }catch (Exception e){
             throw new ServiceException("根据用户名查询用户失败",e);
         }
@@ -149,7 +149,7 @@ public class UserServiceImpl implements UserService
 
     public String saveUserAndRole(SysUser user,String[] roleids)
     {
-        SysUser oldUser = sysusermapper.selectByLoginName(user.getLoginname());
+        SysUser oldUser = sysusermapper.selectByLoginName(user.getLoginname(),user.getId());
         if (oldUser != null) {
             throw new ServiceException("已存在相同登录名");
         }
@@ -178,7 +178,7 @@ public class UserServiceImpl implements UserService
         if (StringUtils.isBlank(userid)) {
             throw new ServiceException("请选择要修改的用户！");
         }
-        SysUser oldUser = sysusermapper.selectByLoginName(user.getLoginname());
+        SysUser oldUser = sysusermapper.selectByLoginName(user.getLoginname(),user.getId());
         if (oldUser != null && !userid.equals(oldUser.getId())) {
             throw new ServiceException("已存在相同登录名");
         }

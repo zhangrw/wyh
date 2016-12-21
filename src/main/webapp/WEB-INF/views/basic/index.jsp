@@ -2,12 +2,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<%--<%@page import="com.banshion.portal.util.Securitys"%>--%>
+
 <html>
 <head>
     <title>基本信息维护</title>
-
-
-
     <style>
         <!--
         .fileload {
@@ -22,7 +21,6 @@
             border: 1px solid #ccc;
             box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
             color: #555;
-
         }
         -->
     </style>
@@ -65,27 +63,53 @@
 <div id="select">
     <div class="select-main">
         <form action="" id="searchForm" method="post" class="well-work bs-adp form-inline">
-            <div  class="row">
-
-                <div  class="leftLable col-md-1" style="text-align:right">患者姓名:</div>
+<c:if test="${isAdmin}">
+            <div class="row">
+                <div  class="col-md-1" style="text-align:right">登录名:</div>
                 <div  class="col-md-2">
-                    <input type="text" class="form-control input-sm" name="patientName" id="patientName" value='' placeholder="患者姓名"/>
+                    <input type="text" class="form-control input-sm" name="loginName" id="loginName" value='' placeholder="登录名"/>
                 </div>
-
-                <div  class="rightLable col-md-1" style="text-align:right">是否糖尿病:</div>
+                <div  class="col-md-1" style="text-align:right">性别:</div>
                 <div  class="col-md-2">
-                    <select class="form-control" id="isdiabetes" name="isdiabetes">
-                        <option value="">请选择</option>
-                        <option value="1">是</option>
-                        <option value="2">否</option>
+                    <select class="form-control input-sm" name="sex" id="sex" >
+                        <option value=""></option>
+                        <option value="1">男</option>
+                        <option value="2">女</option>
                     </select>
                 </div>
-
-                <div  class="col-md-3" style="float:right;margin-right: 30px;margin-top: 5px">
+                <div  class="col-md-1" style="text-align:right">所属单位:</div>
+                <div  class="col-md-2">
+                    <input type="text" class="form-control input-sm" name="deptName" id="deptName" value='' placeholder="选择所属部门"/>
+                    <input id="deptId" name="deptId" hidden/>
+                </div>
+                <div  class="col-md-1" style="text-align:right">银行卡号:</div>
+                <div  class="col-md-2">
+                    <input type="text" class="form-control input-sm" name="bankNumber" id="bankNumber" value='' placeholder="银行卡号"/>
+                </div>
+            </div>
+</c:if>
+            <div  class="row" style="margin-top:5px;">
+                <c:if test="${isAdmin}">
+                    <div  class="col-md-1" style="text-align:right">姓名:</div>
+                    <div  class="col-md-2">
+                        <input type="text" class="form-control input-sm" name="name" id="name" value='' placeholder="患者姓名"/>
+                    </div>
+                    <div  class="col-md-1" style="text-align:right">工号:</div>
+                    <div  class="col-md-2">
+                        <input type="text" class="form-control input-sm" name="jobNumber" id="jobNumber" value='' placeholder="工号"/>
+                    </div>
+                    <div  class="col-md-1" style="text-align:right">身份证号:</div>
+                    <div  class="col-md-2">
+                        <input type="text" class="form-control input-sm" name="idNumber" id="idNumber" value='' placeholder="身份证号"/>
+                    </div>
+                </c:if>
+                <div  class="col-md-3" style="float:right;"><!-- margin-right: 30px;margin-top: 5px -->
+                <c:if test='${isAdmin}'>
                     <button type="button" id="btnQuery" class="btn btn-primary btn-align-right btn-sm">查询</button>
                     <button type="button" id="impExcel" class="btn btn-primary btn-align-right btn-sm">导入</button>
-                    <button type="button" id="expExcel" class="btn btn-primary btn-align-right btn-sm">导出</button>
                     <button type="button" id="downExcel" class="btn btn-primary btn-align-right btn-sm">模版下载</button>
+                </c:if>
+                    <button type="button" id="expExcel" class="btn btn-primary btn-align-right btn-sm">导出</button>
                 </div>
             </div>
         </form>
@@ -148,6 +172,37 @@
 
 <script type="text/javascript">
     $(function(){
+<c:if test="${isAdmin}" >
+        $.getJSON("${ctx}/sys/dept/getallDept",function(data) {
+            $('#deptName').autocomplete(data,{
+                minChars: 0,
+                mustMatch:true,
+                width:260,
+                // 下拉列表显示的字段 ，如果多个用表格格式化，如果单个 直接  return item.COUNTRY_NAME; 即可
+                formatItem: function(item,i, max) {
+                    return '<table><tr><td width="180px;">' + item.name + '</td></tr></table>';//<td width="80px;">' + item.id + '</td>
+                },
+                // 指定 与 输入文字匹配的字段名
+                formatMatch: function(item,i, max) {
+                    return item.id+item.name;
+                },
+                // 选中 某条记录在输入框里 显示的数据字段
+                formatResult: function(item) {
+                    return item.name;
+                }
+            });
+            //选中 某条记录 触发的事件
+            $('#deptName').result(function(event, item){
+                if(item){
+                    if(item.id != $("#deptId").val()){
+                        $("#deptId").val(item.id);
+                    }
+                }else{
+                    $("#deptId").val("");
+                }
+            });
+        });
+</c:if>
 
         var option = {
             url : '${ctx}/basic/getdata',
@@ -201,13 +256,17 @@
 
         $("#grid").jqGrid('navGrid', '#pager', {edit : false, add : false, del : false, search : false,	position : 'right'})
         <%--<shiro:hasPermission name="user:add">--%>
+                <c:if test="${isAdmin}">
                 .navButtonAdd('#pager',{caption:"新增",buttonicon:"ui-icon-plus",onClickButton: function(){toAdd()},position:"last"})
+                </c:if>
                 <%--</shiro:hasPermission>--%>
                 <%--<shiro:hasPermission name="user:update">--%>
                 .navButtonAdd('#pager',{caption:"修改",buttonicon:"ui-icon-pencil",onClickButton: function(){toModify()},position:"last"})
                 <%--</shiro:hasPermission>--%>
                 <%--<shiro:hasPermission name="user:del">--%>
+                <c:if test="${isAdmin}">
                 .navButtonAdd('#pager',{caption:"删除",buttonicon:"ui-icon-trash",onClickButton: function(){toDelete()},position:"last"})
+                </c:if>
                 <%--</shiro:hasPermission>--%>
                 <%--<shiro:hasPermission name="user:resetpassword">--%>
                 <%--.navButtonAdd('#pager',{caption:"重置密码",buttonicon:"ui-icon-disk",onClickButton: function(){toReSetPwd()},position:"last"})--%>
@@ -216,6 +275,22 @@
         ;
         //自适应
         jqgridResponsive("grid",false);
+    });
+
+    $("#btnQuery").click(function(){
+        var myform = $("#searchForm").serializeArray();
+        var data = {};
+        $.each(myform, function(i, field){
+            data[field.name]=null;
+            if(field.value && ''!=field.value){
+                data[field.name] = field.value;
+            }
+        });
+        var postData = $("#grid").jqGrid("getGridParam", "postData");
+        $.extend(postData,data);
+        $("#grid").jqGrid("setGridParam", {
+            search: true
+        }).trigger("reloadGrid", [{page:1}]);
     });
 
     function toAdd(){
@@ -341,7 +416,7 @@
     });
 
     $("#expExcel").click(function(){
-        window.open("${ctx}/basic/export")
+        window.open("${ctx}/basic/export?"+encodeURI($("#searchForm").serialize())  );//encodeURI(encodeURI($("#searchForm").serialize())))
     });
     $("#impExcel").click(function(){
         $( "#dialog-uplaod" ).modal({

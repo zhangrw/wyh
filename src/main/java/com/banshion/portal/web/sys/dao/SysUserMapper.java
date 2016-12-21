@@ -2,6 +2,7 @@ package com.banshion.portal.web.sys.dao;
 
 import com.banshion.intf.MyBatisRepository;
 import com.banshion.portal.sys.authentication.ShiroUser;
+import com.banshion.portal.web.index.filter.UserFilter;
 import com.banshion.portal.web.sys.domain.SysUser;
 import com.banshion.portal.web.sys.domain.SysUserExample;
 import org.apache.ibatis.annotations.Param;
@@ -33,13 +34,15 @@ public interface SysUserMapper {
 
     int updateByPrimaryKey(SysUser record);
 
-    SysUser selectByLoginName(String loginname);
+    SysUser selectByLoginName(@Param("loginname") String loginname,@Param("id") String id);
 
     int deleteByIds(String[] ids);
+
+    List<ShiroUser> getShiroUser(UserFilter filter);
 
     ShiroUser getShiroUser(@Param("id") String id);
 
     List<ShiroUser> getShiroUser();
 
-    List<Map<String,Object>> exportUser();
+    List<Map<String,Object>> exportUser(UserFilter filter);
 }

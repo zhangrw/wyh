@@ -10,7 +10,7 @@
 <body>
 <form id="shirouser" class="form-horizontal" action="${ctx}/basic/save">
     <div class="form-group">
-        <input name="id" value="${shirouser.id}" hidden/>
+        <input  id="id" name="id"value="${shirouser.id}" hidden/>
         <label class="col-lg-3 col-md-3  control-label" for="loginName"><span style="color: red">*</span>登录名：</label>
         <div class="col-lg-4 col-md-4">
             <input type="text" id="loginName"  style="width: 150px" name="loginName" class="form-control input-sm" value="${shirouser.loginName}" placeholder="登录名" required>
@@ -77,7 +77,6 @@
         <label class="col-lg-3 col-md-3  control-label" for="deptName">所属部门：</label>
         <div class="col-lg-6 col-md-6 ">
             <input type="text" id="deptName" name="deptName" value="${shirouser.deptName}" class="form-control input-sm" placeholder="选择所属部门" required>
-
             <div id="deptZtree" class="tree-select">
                 <div id="menu_ztree" class="ztree" style="height:190px;overflow-y:scroll;" ></div>
             </div>
