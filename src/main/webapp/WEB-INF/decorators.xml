@@ -16,5 +16,7 @@
 	<decorator name="basic" page="basic.jsp">
 		<pattern>/basic</pattern>
 		<pattern>/basic/*</pattern>
+		<pattern>/trans</pattern>
+		<pattern>/trans/*</pattern>
 	</decorator>
 </decorators>

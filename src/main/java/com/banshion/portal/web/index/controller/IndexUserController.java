@@ -291,7 +291,7 @@ public class IndexUserController {
             user.setId(UUID.randomUUID().toString());
             String cellValue;
             while (j < colNum) {
-                cellValue = getCellFormatValue(row.getCell((short)j));
+                cellValue = ExcelExportUtil.getCellFormatValue(row.getCell((short)j));
                 cellValue = StringUtils.isNotBlank(cellValue) ? cellValue : null;
                 switch(j) //name sex job_number id_number bank_number bz
                 {
@@ -310,56 +310,6 @@ public class IndexUserController {
         return list;
     }
 
-    /**
-     * 根据HSSFCell类型设置数据
-     *
-     * @param cell
-     * @return
-     */
-    private String getCellFormatValue(HSSFCell cell) {
-        String cellvalue = null;
-        if (cell != null) {
-            // 判断当前Cell的Type
-            switch (cell.getCellType()) {
-                // 如果当前Cell的Type为NUMERIC
-                case HSSFCell.CELL_TYPE_NUMERIC:{
-                    cellvalue = String.valueOf(cell.getNumericCellValue());
-                    break;
-                }
-                case HSSFCell.CELL_TYPE_FORMULA: {
-                    // 判断当前的cell是否为Date
-                    if (HSSFDateUtil.isCellDateFormatted(cell)){
-                        // 如果是Date类型则，转化为Data格式
-                        // 方法1：这样子的data格式是带时分秒的：2011-10-12 0:00:00
-                        // cellvalue = cell.getDateCellValue().toLocaleString();
-
-                        // 方法2：这样子的data格式是不带带时分秒的：2011-10-12
-                        Date date = cell.getDateCellValue();
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                        cellvalue = sdf.format(date);
-                    }
-                    // 如果是纯数字
-                    else {
-                        // 取得当前Cell的数值
-                        cellvalue = String.valueOf(cell.getNumericCellValue());
-                    }
-                    break;
-                }
-                // 如果当前Cell的Type为STRIN
-                case HSSFCell.CELL_TYPE_STRING:
-                    // 取得当前的Cell字符串
-                    cellvalue = cell.getRichStringCellValue().getString();
-                    break;
-                // 默认的Cell值
-                default:
-                    cellvalue = null;
-            }
-        } else {
-            cellvalue = null;
-        }
-        return cellvalue;
-    }
-
     @RequestMapping("downTemplete")
     public void downTempletes(
             @RequestParam(value = "name",defaultValue = "",required = false)String name,
@@ -368,32 +318,34 @@ public class IndexUserController {
         request.setCharacterEncoding("utf-8");
 
         String srcPath = request.getSession().getServletContext().getRealPath("/")+"download";
-
+        File file = null;
         if( "user".equals(name) || StringUtils.isBlank(name) ){ // 下载用户信息导入Excel模板
-            File file = new File(srcPath+File.separator+"userImpTemplete.xls");
-            if( file == null ||  !file.exists() ){
-                log.error("用户信息模板下载失败,文件未找到");
-                return;
-            }
-            response.setContentType("application/x-msdownload;");
-            response.setHeader("Content-disposition", "attachment; filename="
-                    + new String("用户基本信息导入模板.xls".getBytes("utf-8"), "ISO8859-1"));
-            try {
-                InputStream inputStream = new FileInputStream(file);
-                OutputStream os = response.getOutputStream();
-                byte[] b = new byte[2048];
-                int length;
-                while ((length = inputStream.read(b)) > 0) {
-                    os.write(b, 0, length);
-                }
-                os.close();
-                inputStream.close();
-            }catch (Exception e){
+            file = new File(srcPath+File.separator+"userImpTemplete.xls");
 
-            }
-
+        }else if("trans".equals(name)){
+            file = new File(srcPath+File.separator+"transInfoTemplete.xls");
         }
 
+        if( file == null ||  !file.exists() ){
+            log.error("用户信息模板下载失败,文件未找到");
+            return;
+        }
+        response.setContentType("application/x-msdownload;");
+        response.setHeader("Content-disposition", "attachment; filename="
+                + new String("用户基本信息导入模板.xls".getBytes("utf-8"), "ISO8859-1"));
+        try {
+            InputStream inputStream = new FileInputStream(file);
+            OutputStream os = response.getOutputStream();
+            byte[] b = new byte[2048];
+            int length;
+            while ((length = inputStream.read(b)) > 0) {
+                os.write(b, 0, length);
+            }
+            os.close();
+            inputStream.close();
+        }catch (Exception e){
+
+        }
 
 
     }

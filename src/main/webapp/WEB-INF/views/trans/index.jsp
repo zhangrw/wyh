@@ -2,11 +2,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
-<%--<%@page import="com.banshion.portal.util.Securitys"%>--%>
-
 <html>
 <head>
-    <title>基本信息维护</title>
+    <title>转账信息维护</title>
     <style>
         <!--
         .fileload {
@@ -60,39 +58,49 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
 <div id="select">
     <div class="select-main">
         <form action="" id="searchForm" method="post" class="well-work bs-adp form-inline">
-<c:if test="${isAdmin}">
-            <div class="row">
-                <div  class="col-md-1" style="text-align:right">登录名:</div>
-                <div  class="col-md-2">
-                    <input type="text" class="form-control input-sm" name="loginName" id="loginName" value='' placeholder="登录名"/>
+            <c:if test="${isAdmin}">
+                <div class="row">
+                    <div  class="col-md-1" style="text-align:right">流水号:</div>
+                    <div  class="col-md-2">
+                        <input type="text" class="form-control input-sm" name="serialNumber" id="serialNumber" value='' placeholder="流水号"/>
+                    </div>
+                    <div  class="col-md-1" style="text-align:right">所属单位:</div>
+                    <div  class="col-md-2">
+                        <input type="text" class="form-control input-sm" name="deptName" id="deptName" value='' placeholder="选择所属部门"/>
+                        <input id="deptId" name="deptId" hidden/>
+                    </div>
+
+                    <!--
+                    <div  class="col-md-1" style="text-align:right">转出银行卡号:</div>
+                    <div  class="col-md-2">
+                      <input type="text" class="form-control input-sm" name="srcbankNumber" id="srcbankNumber" value='' placeholder="银行卡号"/>
+                    </div>
+                    <div  class="col-md-1" style="text-align:right">转入银行卡号:</div>
+                    <div  class="col-md-2">
+                        <input type="text" class="form-control input-sm" name="targetbankNumber" id="targetbankNumber"
+                               value='' placeholder="银行卡号"/>
+                    </div>
+                     -->
+                    <div  class="col-md-1" style="text-align:right">转账状态:</div>
+                    <div  class="col-md-2">
+                        <select class="form-control input-sm" name="state" id="state">
+                            <option value=""></option>
+                            <option value="1">转账等待中</option>
+                            <option value="2">转账失败</option>
+                            <option value="3">转账成功</option>
+                        </select>
+                    </div>
                 </div>
-                <div  class="col-md-1" style="text-align:right">性别:</div>
-                <div  class="col-md-2">
-                    <select class="form-control input-sm" name="sex" id="sex" >
-                        <option value=""></option>
-                        <option value="1">男</option>
-                        <option value="2">女</option>
-                    </select>
-                </div>
-                <div  class="col-md-1" style="text-align:right">所属单位:</div>
-                <div  class="col-md-2">
-                    <input type="text" class="form-control input-sm" name="deptName" id="deptName" value='' placeholder="选择所属部门"/>
-                    <input id="deptId" name="deptId" hidden/>
-                </div>
-                <div  class="col-md-1" style="text-align:right">银行卡号:</div>
-                <div  class="col-md-2">
-                    <input type="text" class="form-control input-sm" name="bankNumber" id="bankNumber" value='' placeholder="银行卡号"/>
-                </div>
-            </div>
-</c:if>
+            </c:if>
             <div  class="row" style="margin-top:5px;">
                 <c:if test="${isAdmin}">
                     <div  class="col-md-1" style="text-align:right">姓名:</div>
                     <div  class="col-md-2">
-                        <input type="text" class="form-control input-sm" name="name" id="name" value='' placeholder="用户姓名"/>
+                        <input type="text" class="form-control input-sm" name="userName" id="userName" value='' placeholder="用户姓名"/>
                     </div>
                     <div  class="col-md-1" style="text-align:right">工号:</div>
                     <div  class="col-md-2">
@@ -104,17 +112,18 @@
                     </div>
                 </c:if>
                 <div  class="col-md-3" style="float:right;"><!-- margin-right: 30px;margin-top: 5px -->
-                <c:if test='${isAdmin}'>
-                    <button type="button" id="btnQuery" class="btn btn-primary btn-align-right btn-sm">查询</button>
-                    <button type="button" id="impExcel" class="btn btn-primary btn-align-right btn-sm">导入</button>
-                    <button type="button" id="downExcel" class="btn btn-primary btn-align-right btn-sm">模版下载</button>
-                </c:if>
+                    <c:if test='${isAdmin}'>
+                        <button type="button" id="btnQuery" class="btn btn-primary btn-align-right btn-sm">查询</button>
+                        <button type="button" id="impExcel" class="btn btn-primary btn-align-right btn-sm">导入</button>
+                        <button type="button" id="downExcel" class="btn btn-primary btn-align-right btn-sm">模版下载</button>
+                    </c:if>
                     <button type="button" id="expExcel" class="btn btn-primary btn-align-right btn-sm">导出</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
+
 <div style="height: 15px;"></div>
 
 <div id="alert" class="alert alert-danger" hidden>
@@ -124,55 +133,17 @@
     <button data-dismiss="alert" class="close">&times;</button>
     <span id="messageSpanId"></span>
 </div>
-<div id="jqgrid">
+
+<div id="jqgrid"> <!-- style="overflow: auto" 会导致整个列表浮出 而不是列表的滚动条 -->
     <table id="grid"></table>
     <div id="pager"></div>
 </div>
 
-<div id='dialog-uplaod' class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">基本信息</h4>
-            </div>
-            <div class="modal-body">
-                <p>
-
-                <div id="alertForUpload" class="alert alert-danger" hidden>
-                    <strong>Warning!</strong>
-                </div>
-                <form id="uploadForm" method="POST" enctype="multipart/form-data" class="form-horizontal">
-
-                    <div class="form-group">
-                        <label class="col-lg-3 col-md-1  control-label" for="impexcel"><span style="color: red">*</span>选择文件:</label>
-                        <div class="col-lg-7 col-md-8">
-                            <input type="text" name="fileName" id="puf" class="fileload" placeholder="请点击浏览选择文件"/>
-                            <input type="button" value="浏览..." style="height:30px;" onclick="javascript:$('#file').click();" />
-                            <input type="file" name="file" accept=".xls" id="file" style="display:none" onchange="javascript:$('#puf').val($('#file').val());" />
-                        </div>
-                    </div>
-                    <div class="form-group" id="loading" hidden>
-                        <label class="col-lg-5 col-md-1  control-label" for="impexcel">&nbsp;</label>
-                        <div class="col-lg-7 col-md-5">
-                            <img src="${ctx }/static/bootstrap/file-input/img/loading-sm.gif" width="32" height="32" style="margin-right:8px;float:left;vertical-align:top;"/>
-                        </div>
-                    </div>
-                </form>
-
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" id ='cancel_upload' class="btn btn-default btn-sm" tabindex="1001">取消</button>
-                <button type="button" id ='do_save_upload' class="btn btn-primary btn-sm" tabindex="1000">提交</button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
 
 <script type="text/javascript">
     $(function(){
-<c:if test="${isAdmin}" >
+
+        <c:if test="${isAdmin}" >
         $.getJSON("${ctx}/sys/dept/getallDept",function(data) {
             $('#deptName').autocomplete(data,{
                 minChars: 0,
@@ -202,34 +173,37 @@
                 }
             });
         });
-</c:if>
+        </c:if>
 
         var option = {
-            url : '${ctx}/basic/getdata',
+            url : '${ctx}/trans/getdata',
             datatype : 'json',
             mtype : 'POST',
-            colNames : [ '','登录名','用户名','工号','性别','身份证号','银行卡号','部门ID','所属部门','备注信息'],
-            colModel : [ {name : 'id',index : 'id',hidden : true},
-                {name : 'loginName', index : 'loginName', align:'center' },
-                {name : 'name', index : 'name', align:'center' },
-                {name : 'jobNumber', index : 'jobNumber', align:'center' },
-                {name : 'sex', align:'center',formatter : function(cellvalue, option, rowObjects){
-                    if (cellvalue == 1) {
-                        return "男";
-                    }else{
-                        return "女";
-                    }
-                }
+            colNames : [ '流水号','用户名','所属部门','工号','身份证号','转出银行卡号','转出银行名称','转入银行卡号','转入银行名称','备注信息'],
+            colModel :
+                [ {name : 'serial_number',index : 'serial_number',width:"200"}, //,hidden : true
+                {name : 'user_name', index : 'user_name', align:'center' },
+                {name : 'dept_name', index : 'dept_name', align:'center' },
+                {name : 'job_number', index : 'job_number', align:'center',width:"200"},
+                {name : 'id_number', align:'center',width:"200"
+//                    ,formatter : function(cellvalue, option, rowObjects){
+//                    if (cellvalue == 1) {
+//                        return "男";
+//                    }else{
+//                        return "女";
+//                    }
+//                }
                 },
-                {name : 'idNumber', align:'center' },
-                {name : 'bankNumber', align:'center' },
-                {name : 'deptId', align:'left',hidden : true },
-                {name : 'deptName', align:'center' },
-                {name : 'bz', align:'left' }
+                {name : 'srcbank_number', align:'center' ,width:"200"},
+                {name : 'srcbank_name', align:'center' ,width:"200"},
+                {name : 'targetbank_number', align:'center',width:"200" },
+                {name : 'targetbank_name', align:'left',width:"200"},
+                {name : 'bz', align:'left',width:"200" }
             ],
             rowNum : 15,
             rowList : [ 15, 30, 50 ],
             height : "100%",
+            shrinkToFit:false,
             autowidth : true,
             pager : '#pager',
             sortname : 'id',
@@ -255,24 +229,16 @@
         $("#grid").jqGrid(option);
 
         $("#grid").jqGrid('navGrid', '#pager', {edit : false, add : false, del : false, search : false,	position : 'right'})
-        <%--<shiro:hasPermission name="user:add">--%>
-                <c:if test="${isAdmin}">
+<c:if test="${isAdmin}">
                 .navButtonAdd('#pager',{caption:"新增",buttonicon:"ui-icon-plus",onClickButton: function(){toAdd()},position:"last"})
-                </c:if>
-                <%--</shiro:hasPermission>--%>
-                <%--<shiro:hasPermission name="user:update">--%>
+</c:if>
                 .navButtonAdd('#pager',{caption:"修改",buttonicon:"ui-icon-pencil",onClickButton: function(){toModify()},position:"last"})
-                <%--</shiro:hasPermission>--%>
-                <%--<shiro:hasPermission name="user:del">--%>
-                <c:if test="${isAdmin}">
+<c:if test="${isAdmin}">
                 .navButtonAdd('#pager',{caption:"删除",buttonicon:"ui-icon-trash",onClickButton: function(){toDelete()},position:"last"})
-                </c:if>
-                <%--</shiro:hasPermission>--%>
-                <%--<shiro:hasPermission name="user:resetpassword">--%>
-                <%--.navButtonAdd('#pager',{caption:"重置密码",buttonicon:"ui-icon-disk",onClickButton: function(){toReSetPwd()},position:"last"})--%>
-        <%--</shiro:hasPermission>--%>
-//                .navButtonAdd('#pager',{caption:"数据权限",buttonicon:"ui-icon-disk",onClickButton: function(){toDataLimit()},position:"last"})
+</c:if>
         ;
+        // 设置出现水平滚动条
+        $("#grid").closest(".ui-jqgrid-bdiv").css({ 'overflow-x' : 'scroll' });
         //自适应
         jqgridResponsive("grid",false);
     });
@@ -294,9 +260,14 @@
     });
 
     function toAdd(){
-        openDialog("${ctx}/basic/openmodaluserinfo?time="+new Date().getTime());
+        openDialog("${ctx}/trans/openmodaltransinfo?time="+new Date().getTime());
         return;
     }
+
+    $("#cancel2").click(function(){
+        $("#dialog-delete").modal("hide");
+    });
+
     function toDelete(){
         var ids = $("#grid").jqGrid('getGridParam','selarrrow');
         if($.isEmptyObject(ids)) {
@@ -309,10 +280,6 @@
             keyboard: false
         });
     }
-
-    $("#cancel2").click(function(){
-        $("#dialog-delete").modal("hide");
-    });
 
     //删除一条记录操作
     $('#do_delete').click(function(){
@@ -334,7 +301,7 @@
             }
         }
         //开始执行删除动作
-        $.post("${ctx}/basic/delete",
+        $.post("${ctx}/trans/delete",
                 {ids :str },
                 function(data){
                     $("#grid").trigger("reloadGrid", {page:1 });
@@ -351,9 +318,8 @@
     });
 
     function toModify(){
-//        $("#grid").jqGrid().getRowData()[0].id
         if( $("#grid").jqGrid().getRowData().length == 1 ){// 只有一行数据的时候
-            openDialog("${ctx}/basic/openmodaluserinfo?id="+$("#grid").jqGrid().getRowData()[0].id+"&time="+new Date().getTime());
+            openDialog("${ctx}/trans/openmodaltransinfo?id="+$("#grid").jqGrid().getRowData()[0].id+"&time="+new Date().getTime());
             return;
         }
         var ids = $("#grid").jqGrid('getGridParam','selarrrow');
@@ -362,7 +328,8 @@
             return;
         }
         var oneData = $("#grid").jqGrid('getRowData',ids[0]);
-        openDialog("${ctx}/basic/openmodaluserinfo?id="+oneData.id+"&time="+new Date().getTime());
+        openDialog("${ctx}/trans/openmodaltransinfo?id="+oneData.id+"&time="+new Date().getTime());
+        return;
     }
 
     //弹出对话框
@@ -389,7 +356,7 @@
 
 
     $("#do_save").click(function(){
-        $("#shirouser")[0].action = "${ctx}/basic/save";
+        $("#shirouser")[0].action = "${ctx}/trans/save";
 
         var myform = $("#dialog-confirm").find("form").get(0);
         if(!jQuery(myform).validate().form())
@@ -398,7 +365,7 @@
         }
 
         $("#shirouser").ajaxSubmit({
-            url:"${ctx}/basic/save",
+            url:"${ctx}/trans/save",
             type:"POST",
             dataType:"json",
             success:function(data){
@@ -420,7 +387,7 @@
     });
 
     $("#expExcel").click(function(){
-        window.open("${ctx}/basic/export?"+encodeURI($("#searchForm").serialize())  );//encodeURI(encodeURI($("#searchForm").serialize())))
+        window.open("${ctx}/trans/export?"+encodeURI($("#searchForm").serialize()));
     });
     $("#impExcel").click(function(){
         $( "#dialog-uplaod" ).modal({
@@ -436,7 +403,7 @@
     $("#do_save_upload").click(function(){
         $( "#do_save_upload").attr("disabled",true);
         $("#uploadForm").ajaxSubmit({
-            url:"${ctx}/basic/upload",
+            url:"${ctx}/trans/upload",
             type:"POST",
 //            dataType:"json",
             success:function(data){
@@ -454,8 +421,9 @@
 
 
     $("#downExcel").click(function(){
-        window.open("${ctx}/basic/downTemplete?name=user");
+        window.open("${ctx}/basic/downTemplete?name=trans");
     });
+
 
 </script>
 </body>

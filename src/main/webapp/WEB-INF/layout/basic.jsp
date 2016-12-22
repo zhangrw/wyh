@@ -105,7 +105,7 @@
                                aria-expanded="false">基础功能<span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a href="javascript:{}" onclick="goTo('${ctx}/basic')" >基本信息维护</a></li>
-                                <li><a href="#" >信息维护</a></li>
+                                <li><a href="javascript:{}" onclick="goTo('${ctx}/trans')" >转账信息维护</a></li>
                             </ul>
                         </li>
                 </ul>

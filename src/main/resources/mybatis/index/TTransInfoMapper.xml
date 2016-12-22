@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.banshion.portal.web.index.dao.TTransInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.banshion.portal.web.index.domain.TTransInfo" >
+    <result column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="srcbank_number" property="srcbankNumber" jdbcType="VARCHAR" />
+    <result column="srcbank_name" property="srcbankName" jdbcType="VARCHAR" />
+    <result column="targetbank_name" property="targetbankName" jdbcType="VARCHAR" />
+    <result column="targetbank_number" property="targetbankNumber" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="bz" property="bz" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    serial_number, user_id, srcbank_number, srcbank_name, targetbank_name, targetbank_number, 
+    state, bz
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.banshion.portal.web.index.domain.TTransInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_trans_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.banshion.portal.web.index.domain.TTransInfoExample" >
+    delete from t_trans_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.banshion.portal.web.index.domain.TTransInfo" >
+    insert into t_trans_info (serial_number, user_id, srcbank_number, 
+      srcbank_name, targetbank_name, targetbank_number, 
+      state, bz)
+    values (#{serialNumber,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{srcbankNumber,jdbcType=VARCHAR}, 
+      #{srcbankName,jdbcType=VARCHAR}, #{targetbankName,jdbcType=VARCHAR}, #{targetbankNumber,jdbcType=VARCHAR}, 
+      #{state,jdbcType=INTEGER}, #{bz,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.banshion.portal.web.index.domain.TTransInfo" >
+    insert into t_trans_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="serialNumber != null" >
+        serial_number,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="srcbankNumber != null" >
+        srcbank_number,
+      </if>
+      <if test="srcbankName != null" >
+        srcbank_name,
+      </if>
+      <if test="targetbankName != null" >
+        targetbank_name,
+      </if>
+      <if test="targetbankNumber != null" >
+        targetbank_number,
+      </if>
+      state,
+      <if test="bz != null" >
+        bz,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="serialNumber != null" >
+        #{serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="srcbankNumber != null" >
+        #{srcbankNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="srcbankName != null" >
+        #{srcbankName,jdbcType=VARCHAR},
+      </if>
+      <if test="targetbankName != null" >
+        #{targetbankName,jdbcType=VARCHAR},
+      </if>
+      <if test="targetbankNumber != null" >
+        #{targetbankNumber,jdbcType=VARCHAR},
+      </if>
+      #{state,jdbcType=INTEGER},
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.banshion.portal.web.index.domain.TTransInfoExample" resultType="java.lang.Integer" >
+    select count(*) from t_trans_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_trans_info
+    <set >
+      <if test="record.serialNumber != null" >
+        serial_number = #{record.serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.srcbankNumber != null" >
+        srcbank_number = #{record.srcbankNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.srcbankName != null" >
+        srcbank_name = #{record.srcbankName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.targetbankName != null" >
+        targetbank_name = #{record.targetbankName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.targetbankNumber != null" >
+        targetbank_number = #{record.targetbankNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.state != null" >
+        state = #{record.state,jdbcType=INTEGER},
+      </if>
+      <if test="record.bz != null" >
+        bz = #{record.bz,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_trans_info
+    set serial_number = #{record.serialNumber,jdbcType=VARCHAR},
+      user_id = #{record.userId,jdbcType=VARCHAR},
+      srcbank_number = #{record.srcbankNumber,jdbcType=VARCHAR},
+      srcbank_name = #{record.srcbankName,jdbcType=VARCHAR},
+      targetbank_name = #{record.targetbankName,jdbcType=VARCHAR},
+      targetbank_number = #{record.targetbankNumber,jdbcType=VARCHAR},
+      state = #{record.state,jdbcType=INTEGER},
+      bz = #{record.bz,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+
+  <select id="getData" resultType="map" >
+    Select
+    ts.serial_number, ts.user_id,
+    ts.srcbank_number,
+    ts.srcbank_name,
+    ts.targetbank_name,
+    ts.targetbank_number,
+    ts.state, ts.bz,tu.name as user_name,tu.job_number,tu.id_number,
+    sd.id as dept_id,sd.name as dept_name
+    from t_trans_info ts
+    left join t_index_user tu on ts.user_id = tu.id
+    left join sys_dept sd on tu.dept_id = sd.id
+    where 1=1
+    <!--<if test="">-->
+      <!---->
+    <!--</if>-->
+  </select>
+  <delete id="deleteByIds">
+    delete from  t_index_user
+    where 1=1
+    and id in
+    <foreach collection="array" item="id" index="i" open="("
+             separator="," close=")">
+      #{id}
+    </foreach>
+  </delete>
+</mapper>
