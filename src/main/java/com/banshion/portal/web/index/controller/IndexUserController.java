@@ -346,7 +346,12 @@ public class IndexUserController {
         }catch (Exception e){
 
         }
-
-
     }
+
+    @RequestMapping("getalluser")
+    @ResponseBody
+    public List<ShiroUser> getallUser(){
+        return userDao.getShiroUser(null);
+    }
+
 }

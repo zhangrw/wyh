@@ -12,18 +12,53 @@ public class TransFilter extends BaseFilter {
     private String idNumber;
     private String jobNumber;
     private String srcbankNumber;
+    private String srcbankName;
     private String targetbankNumber;
+    private String targetbankName;
     private Integer state;
-    private String id;
+    private String userId;
+    private String transValue;
+    private String deptId;
 
-    public String getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
+    public void setSrcbankName(String srcbankName) {
+        this.srcbankName = srcbankName;
+    }
+
+    public void setTargetbankName(String targetbankName) {
+        this.targetbankName = targetbankName;
+    }
+
+    public void setTransValue(String transValue) {
+        this.transValue = transValue;
+    }
+
+    public String getSrcbankName() {
+        return srcbankName;
+    }
+
+    public String getTargetbankName() {
+        return targetbankName;
+    }
+
+    public String getTransValue() {
+        return transValue;
+    }
+
+    public String getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
+    }
     public void setUserName(String userName) {
         this.userName = userName;
     }

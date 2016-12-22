@@ -3,6 +3,7 @@
 <mapper namespace="com.banshion.portal.web.index.dao.TTransInfoMapper" >
   <resultMap id="BaseResultMap" type="com.banshion.portal.web.index.domain.TTransInfo" >
     <result column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
+    <result column="trans_value" property="transValue" jdbcType="VARCHAR" />
     <result column="user_id" property="userId" jdbcType="VARCHAR" />
     <result column="srcbank_number" property="srcbankNumber" jdbcType="VARCHAR" />
     <result column="srcbank_name" property="srcbankName" jdbcType="VARCHAR" />
@@ -10,6 +11,7 @@
     <result column="targetbank_number" property="targetbankNumber" jdbcType="VARCHAR" />
     <result column="state" property="state" jdbcType="INTEGER" />
     <result column="bz" property="bz" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -70,8 +72,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    serial_number, user_id, srcbank_number, srcbank_name, targetbank_name, targetbank_number, 
-    state, bz
+    serial_number, trans_value, user_id, srcbank_number, srcbank_name, targetbank_name, 
+    targetbank_number, state, bz, create_date
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.banshion.portal.web.index.domain.TTransInfoExample" >
     select
@@ -94,18 +96,23 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.banshion.portal.web.index.domain.TTransInfo" >
-    insert into t_trans_info (serial_number, user_id, srcbank_number, 
-      srcbank_name, targetbank_name, targetbank_number, 
-      state, bz)
-    values (#{serialNumber,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{srcbankNumber,jdbcType=VARCHAR}, 
-      #{srcbankName,jdbcType=VARCHAR}, #{targetbankName,jdbcType=VARCHAR}, #{targetbankNumber,jdbcType=VARCHAR}, 
-      #{state,jdbcType=INTEGER}, #{bz,jdbcType=VARCHAR})
+    insert into t_trans_info (serial_number, trans_value, user_id, 
+      srcbank_number, srcbank_name, targetbank_name, 
+      targetbank_number, state, bz, 
+      create_date)
+    values (#{serialNumber,jdbcType=VARCHAR}, #{transValue,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{srcbankNumber,jdbcType=VARCHAR}, #{srcbankName,jdbcType=VARCHAR}, #{targetbankName,jdbcType=VARCHAR}, 
+      #{targetbankNumber,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{bz,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.banshion.portal.web.index.domain.TTransInfo" >
     insert into t_trans_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="serialNumber != null" >
         serial_number,
+      </if>
+      <if test="transValue != null" >
+        trans_value,
       </if>
       <if test="userId != null" >
         user_id,
@@ -126,10 +133,16 @@
       <if test="bz != null" >
         bz,
       </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="serialNumber != null" >
         #{serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="transValue != null" >
+        #{transValue,jdbcType=VARCHAR},
       </if>
       <if test="userId != null" >
         #{userId,jdbcType=VARCHAR},
@@ -150,6 +163,9 @@
       <if test="bz != null" >
         #{bz,jdbcType=VARCHAR},
       </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.banshion.portal.web.index.domain.TTransInfoExample" resultType="java.lang.Integer" >
@@ -163,6 +179,9 @@
     <set >
       <if test="record.serialNumber != null" >
         serial_number = #{record.serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.transValue != null" >
+        trans_value = #{record.transValue,jdbcType=VARCHAR},
       </if>
       <if test="record.userId != null" >
         user_id = #{record.userId,jdbcType=VARCHAR},
@@ -185,6 +204,9 @@
       <if test="record.bz != null" >
         bz = #{record.bz,jdbcType=VARCHAR},
       </if>
+      <if test="record.createDate != null" >
+        create_date = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -193,13 +215,15 @@
   <update id="updateByExample" parameterType="map" >
     update t_trans_info
     set serial_number = #{record.serialNumber,jdbcType=VARCHAR},
+      trans_value = #{record.transValue,jdbcType=VARCHAR},
       user_id = #{record.userId,jdbcType=VARCHAR},
       srcbank_number = #{record.srcbankNumber,jdbcType=VARCHAR},
       srcbank_name = #{record.srcbankName,jdbcType=VARCHAR},
       targetbank_name = #{record.targetbankName,jdbcType=VARCHAR},
       targetbank_number = #{record.targetbankNumber,jdbcType=VARCHAR},
       state = #{record.state,jdbcType=INTEGER},
-      bz = #{record.bz,jdbcType=VARCHAR}
+      bz = #{record.bz,jdbcType=VARCHAR},
+      create_date = #{record.createDate,jdbcType=TIMESTAMP}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -211,7 +235,7 @@
     ts.srcbank_number,
     ts.srcbank_name,
     ts.targetbank_name,
-    ts.targetbank_number,
+    ts.targetbank_number,ts.trans_value,
     ts.state, ts.bz,tu.name as user_name,tu.job_number,tu.id_number,
     sd.id as dept_id,sd.name as dept_name
     from t_trans_info ts
@@ -219,7 +243,7 @@
     left join sys_dept sd on tu.dept_id = sd.id
     where 1=1
     <!--<if test="">-->
-      <!---->
+    <!---->
     <!--</if>-->
   </select>
   <delete id="deleteByIds">

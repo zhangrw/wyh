@@ -95,21 +95,17 @@
                     </ul>
                 </li>
             </ul>
-
-
-
         <ul class="nav navbar-nav" id = "backindex">
             <li id="systemManage_nav"><a href="javascript:{}" onclick="goTo('${ctx}/index')"><i class="glyphicon glyphicon-home" title="工作台"></i></a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                               aria-expanded="false">基础功能<span class="caret"></span></a>
+                               aria-expanded="false">信息维护<span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a href="javascript:{}" onclick="goTo('${ctx}/basic')" >基本信息维护</a></li>
                                 <li><a href="javascript:{}" onclick="goTo('${ctx}/trans')" >转账信息维护</a></li>
                             </ul>
                         </li>
                 </ul>
-
             </div>
         </div>
 

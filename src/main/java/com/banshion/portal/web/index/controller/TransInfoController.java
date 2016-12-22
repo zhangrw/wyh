@@ -77,15 +77,16 @@ public class TransInfoController {
     @RequestMapping("openmodaltransinfo")
     public String modify(Model model,@RequestParam(value = "id",defaultValue = "") String id){
         Map<String,Object> m = new HashedMap();
+        model.addAttribute("operate","add");
         if(StringUtils.isNotBlank(id)){
             TransFilter filter = new TransFilter();
-            filter.setId(id);
+            filter.setUserId(id);
             List<Map<String,Object>> list = transDao.getData(filter);
             if( list != null && list.size() > 0 ){
                 m = list.get(0);
             }
+            model.addAttribute("operate","update");
         }
-
         model.addAttribute("transinfo",m);
         return "trans/form";
     }
@@ -308,8 +309,5 @@ public class TransInfoController {
         }
         return list;
     }
-
-
-
 
 }

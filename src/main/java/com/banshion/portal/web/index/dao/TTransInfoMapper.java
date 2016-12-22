@@ -27,5 +27,4 @@ public interface TTransInfoMapper {
     List<Map<String,Object>> getData(TransFilter filter);
 
     int deleteByIds(String[] ids);
-
 }

@@ -1,6 +1,7 @@
 package com.banshion.portal.web.index.domain;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TTransInfoExample {
@@ -171,6 +172,76 @@ public class TTransInfoExample {
 
         public Criteria andSerialNumberNotBetween(String value1, String value2) {
             addCriterion("serial_number not between", value1, value2, "serialNumber");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransValueIsNull() {
+            addCriterion("trans_value is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransValueIsNotNull() {
+            addCriterion("trans_value is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransValueEqualTo(String value) {
+            addCriterion("trans_value =", value, "transValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransValueNotEqualTo(String value) {
+            addCriterion("trans_value <>", value, "transValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransValueGreaterThan(String value) {
+            addCriterion("trans_value >", value, "transValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransValueGreaterThanOrEqualTo(String value) {
+            addCriterion("trans_value >=", value, "transValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransValueLessThan(String value) {
+            addCriterion("trans_value <", value, "transValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransValueLessThanOrEqualTo(String value) {
+            addCriterion("trans_value <=", value, "transValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransValueLike(String value) {
+            addCriterion("trans_value like", value, "transValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransValueNotLike(String value) {
+            addCriterion("trans_value not like", value, "transValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransValueIn(List<String> values) {
+            addCriterion("trans_value in", values, "transValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransValueNotIn(List<String> values) {
+            addCriterion("trans_value not in", values, "transValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransValueBetween(String value1, String value2) {
+            addCriterion("trans_value between", value1, value2, "transValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andTransValueNotBetween(String value1, String value2) {
+            addCriterion("trans_value not between", value1, value2, "transValue");
             return (Criteria) this;
         }
 
@@ -651,6 +722,66 @@ public class TTransInfoExample {
 
         public Criteria andBzNotBetween(String value1, String value2) {
             addCriterion("bz not between", value1, value2, "bz");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateDateIsNull() {
+            addCriterion("create_date is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateDateIsNotNull() {
+            addCriterion("create_date is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateDateEqualTo(Date value) {
+            addCriterion("create_date =", value, "createDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateDateNotEqualTo(Date value) {
+            addCriterion("create_date <>", value, "createDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateDateGreaterThan(Date value) {
+            addCriterion("create_date >", value, "createDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateDateGreaterThanOrEqualTo(Date value) {
+            addCriterion("create_date >=", value, "createDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateDateLessThan(Date value) {
+            addCriterion("create_date <", value, "createDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateDateLessThanOrEqualTo(Date value) {
+            addCriterion("create_date <=", value, "createDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateDateIn(List<Date> values) {
+            addCriterion("create_date in", values, "createDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateDateNotIn(List<Date> values) {
+            addCriterion("create_date not in", values, "createDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateDateBetween(Date value1, Date value2) {
+            addCriterion("create_date between", value1, value2, "createDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateDateNotBetween(Date value1, Date value2) {
+            addCriterion("create_date not between", value1, value2, "createDate");
             return (Criteria) this;
         }
     }

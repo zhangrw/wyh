@@ -218,7 +218,7 @@
         }
     });
 
-    function changepwd(){debugger
+    function changepwd(){
         if( $("input[name=checkbox]")[0].checked ){
             $("#cgepwd")[0].style.display="block"
 

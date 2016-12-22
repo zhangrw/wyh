@@ -142,8 +142,7 @@
 
 <script type="text/javascript">
     $(function(){
-
-        <c:if test="${isAdmin}" >
+        <%--<c:if test="${isAdmin}" >--%>
         $.getJSON("${ctx}/sys/dept/getallDept",function(data) {
             $('#deptName').autocomplete(data,{
                 minChars: 0,
@@ -173,7 +172,7 @@
                 }
             });
         });
-        </c:if>
+        <%--</c:if>--%>
 
         var option = {
             url : '${ctx}/trans/getdata',
@@ -185,15 +184,7 @@
                 {name : 'user_name', index : 'user_name', align:'center' },
                 {name : 'dept_name', index : 'dept_name', align:'center' },
                 {name : 'job_number', index : 'job_number', align:'center',width:"200"},
-                {name : 'id_number', align:'center',width:"200"
-//                    ,formatter : function(cellvalue, option, rowObjects){
-//                    if (cellvalue == 1) {
-//                        return "男";
-//                    }else{
-//                        return "女";
-//                    }
-//                }
-                },
+                {name : 'id_number', align:'center',width:"200"},
                 {name : 'srcbank_number', align:'center' ,width:"200"},
                 {name : 'srcbank_name', align:'center' ,width:"200"},
                 {name : 'targetbank_number', align:'center',width:"200" },
@@ -203,7 +194,7 @@
             rowNum : 15,
             rowList : [ 15, 30, 50 ],
             height : "100%",
-            shrinkToFit:false,
+            shrinkToFit:false,// 设置出现水平滚动条
             autowidth : true,
             pager : '#pager',
             sortname : 'id',
