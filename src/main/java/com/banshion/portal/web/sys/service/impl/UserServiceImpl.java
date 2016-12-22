@@ -3,6 +3,7 @@ package com.banshion.portal.web.sys.service.impl;
 import com.banshion.portal.exception.ServiceException;
 import com.banshion.portal.sys.authentication.ShiroUser;
 import com.banshion.portal.util.PasswordUtil;
+import com.banshion.portal.web.index.filter.UserFilter;
 import com.banshion.portal.web.sys.dao.SysRoleMapper;
 import com.banshion.portal.web.sys.dao.SysUserMapper;
 import com.banshion.portal.web.sys.dao.SysUserRoleMapper;
@@ -72,7 +73,12 @@ public class UserServiceImpl implements UserService
 
             if( pwd.equals(user.getPassword())){
 
-                return sysusermapper.getShiroUser(user.getId());
+                UserFilter filter = new UserFilter();
+                filter.setId(user.getId());
+                List<ShiroUser> userList = sysusermapper.getShiroUser(filter);
+//                if( userList != null && userList.size() == 1 ){
+                    return userList.get(0);
+//                }
             }else{
                 throw new IncorrectCredentialsException();
             }

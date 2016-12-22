@@ -40,9 +40,5 @@ public interface SysUserMapper {
 
     List<ShiroUser> getShiroUser(UserFilter filter);
 
-    ShiroUser getShiroUser(@Param("id") String id);
-
-    List<ShiroUser> getShiroUser();
-
     List<Map<String,Object>> exportUser(UserFilter filter);
 }

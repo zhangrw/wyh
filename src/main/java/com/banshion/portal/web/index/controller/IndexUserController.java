@@ -74,10 +74,15 @@ public class IndexUserController {
     }
 
     @RequestMapping("openmodaluserinfo")
-    public String modify(Model model,@RequestParam(value = "id",required = false,defaultValue = "") String id){
-        ShiroUser user;
+    public String modify(Model model,@RequestParam(value = "id",defaultValue = "") String id){
+        ShiroUser user = new ShiroUser();
         if(StringUtils.isNotBlank(id)){
-            user = userDao.getShiroUser(id);
+            UserFilter filter = new UserFilter();
+            filter.setId(id);
+            List<ShiroUser> list = userDao.getShiroUser(filter);
+            if( list != null && list.size() > 0 ){
+                user = list.get(0);
+            }
         }
         else{
             user = new ShiroUser();
