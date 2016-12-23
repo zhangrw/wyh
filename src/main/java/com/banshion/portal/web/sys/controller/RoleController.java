@@ -30,6 +30,7 @@ public class RoleController
     private RoleService roleService;
 
     @RequestMapping
+    @RequiresPermissions("sysmgp:role")
     public String index(){
         return "sys/role/list";
     }

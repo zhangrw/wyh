@@ -296,18 +296,22 @@
     <if test="userName != null and userName !=''">
       and tu.name like  concat('%',#{userName},'%')
     </if>
+    <if test="userId != null and userId !=''">
+      and ts.user_id = #{userId}
+    </if>
     <if test="jobNumber != null and jobNumber !=''">
       and tu.job_number like  concat('%',#{jobNumber},'%')
     </if>
     <if test="idNumber != null and idNumber !=''">
       and tu.id_number like  concat('%',#{idNumber},'%')
     </if>
-    <!--<if test="sidx != null and sidx != ''">-->
-    <!--order by ${sidx}-->
-    <!--<if test="sord!=null and sord!= ''">-->
-    <!--${sord}-->
-    <!--</if>-->
-    <!--</if>-->
+    <!-- order by serial_number DESC -->
+    <if test="sidx != null and sidx != ''">
+      order by ${sidx}
+        <if test="sord!=null and sord!= ''">
+          ${sord}
+        </if>
+    </if>
   </select>
 
 
@@ -358,9 +362,9 @@
   </select>
 
   <delete id="deleteByIds">
-    delete from  t_index_user
+    delete from  t_trans_info
     where 1=1
-    and id in
+    and serial_number in
     <foreach collection="array" item="id" index="i" open="("
              separator="," close=")">
       #{id}

@@ -36,6 +36,7 @@ public class UserController
     UserService userDao;
 
     @RequestMapping()
+    @RequiresPermissions("sys:usermgp")
     public String index(){
         return "sys/user/list";
     }

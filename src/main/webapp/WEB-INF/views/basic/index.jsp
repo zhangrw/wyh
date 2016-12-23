@@ -210,9 +210,9 @@
             mtype : 'POST',
             colNames : [ '','登录名','用户名','工号','性别','身份证号','银行卡号','部门ID','所属部门','备注信息'],
             colModel : [ {name : 'id',index : 'id',hidden : true},
-                {name : 'loginName', index : 'loginName', align:'center' },
-                {name : 'name', index : 'name', align:'center' },
-                {name : 'jobNumber', index : 'jobNumber', align:'center' },
+                {name : 'loginName',align:'center' },
+                {name : 'name',index:'tu.name',align:'center' },
+                {name : 'jobNumber',index:'job_Number', align:'center' },
                 {name : 'sex', align:'center',formatter : function(cellvalue, option, rowObjects){
                     if (cellvalue == 1) {
                         return "男";
@@ -221,10 +221,10 @@
                     }
                 }
                 },
-                {name : 'idNumber', align:'center' },
-                {name : 'bankNumber', align:'center' },
-                {name : 'deptId', align:'left',hidden : true },
-                {name : 'deptName', align:'center' },
+                {name : 'idNumber',index:'id_number', align:'center' },
+                {name : 'bankNumber',index:'bank_Number' ,align:'center' },
+                {name : 'deptId',index:'dept_Id', align:'left',hidden : true },
+                {name : 'deptName',index:'sd.name', align:'center' },
                 {name : 'bz', align:'left' }
             ],
             rowNum : 15,
@@ -232,12 +232,12 @@
             height : "100%",
             autowidth : true,
             pager : '#pager',
-            sortname : 'id',
+            sortname : 'tu.name',
+            sortorder : "desc",
             altRows:true,
             hidegrid : false,
             viewrecords : true,
             recordpos : 'left',
-            sortorder : "desc",
             emptyrecords : "没有可显示记录",
             loadonce : false,
             multiselect:true,
@@ -456,7 +456,21 @@
     $("#downExcel").click(function(){
         window.open("${ctx}/basic/downTemplete?name=user");
     });
+    function showResult(result,message,delay){
+        $("#messageSpanId").text(message);
 
+        if (!delay || typeof(delay)=="undefined" || typeof(delay)!='number'){
+            delay = 2000;
+        }
+        if(result){
+            $("#message").addClass('alert-success').removeClass('alert-danger').slideToggle(1000);
+        }else{
+            $("#message").addClass('alert-danger').removeClass('alert-success').slideToggle(1000);
+        }
+        window.setTimeout(function() {
+            $('#message').slideToggle(1000);
+        }, delay);
+    }
 </script>
 </body>
 </html>

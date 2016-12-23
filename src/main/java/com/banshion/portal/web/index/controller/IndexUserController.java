@@ -67,9 +67,10 @@ public class IndexUserController {
             Page<ShiroUser> list2 = (Page<ShiroUser>)userDao.getShiroUser(filter);
             return list2;
         }else{
-        List<ShiroUser> list  = new ArrayList<ShiroUser>();
-        list.add(Securitys.getUser());
-        return list;
+            List<ShiroUser> list  = new ArrayList<ShiroUser>();
+                filter.setId(Securitys.getUserId());
+                list = userDao.getShiroUser(filter);
+            return list;
         }
     }
 

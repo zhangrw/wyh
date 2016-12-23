@@ -6,11 +6,14 @@ import com.banshion.portal.util.Securitys;
 import com.banshion.portal.util.excel.ExcelExportConfig;
 import com.banshion.portal.util.excel.ExcelExportUtil;
 import com.banshion.portal.web.index.dao.TTransInfoMapper;
+import com.banshion.portal.web.index.dao.TindexUserMapper;
 import com.banshion.portal.web.index.domain.TTransInfo;
 import com.banshion.portal.web.index.domain.TindexUser;
+import com.banshion.portal.web.index.domain.TindexUserExample;
 import com.banshion.portal.web.index.filter.TransFilter;
 import com.banshion.portal.web.index.filter.UserFilter;
 import com.banshion.portal.web.sys.domain.SysUser;
+import com.banshion.portal.web.sys.domain.SysUserExample;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.collections.map.HashedMap;
@@ -50,6 +53,9 @@ public class TransInfoController {
 
     @Autowired
     private TTransInfoMapper transDao;
+
+    @Autowired
+    private TindexUserMapper indexuserDao;
 
     @RequestMapping
     public String index(Model model , HttpServletRequest request){
@@ -202,34 +208,25 @@ public class TransInfoController {
         }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
         String fileName = sdf.format(new Date())+"_"+ Securitys.getUserName()+"_"+new Date().getTime()+"_转账信息导入.xls";
-        File filePath = new File(ctxPath + File.separator + fileName);
+        File uploadfilePath = new File(ctxPath + File.separator + fileName);
         try {
-            if(!filePath.exists()){
-                filePath.createNewFile();
+            if(!uploadfilePath.exists()){
+                uploadfilePath.createNewFile();
             }
-            file.transferTo(filePath);
+            file.transferTo(uploadfilePath);
             result.put("success", true);
         } catch (Exception e) {
             e.printStackTrace();
-            if(filePath.isFile()&&filePath.exists()){
-                filePath.delete();
+            if(uploadfilePath.isFile()&&uploadfilePath.exists()){
+                uploadfilePath.delete();
             }
             result.put("msg", "上传失败，请联系管理员！");
             result.put("success", false);
         }
         try{
-            List<TTransInfo> list = readUserExcel(filePath);
-            SysUser suser;
+            List<TTransInfo> list = readUserExcel(uploadfilePath);
             for( TTransInfo po : list ){
-                suser = new SysUser();
-//                tuserDao.insert(po);
-//                suser.setId(po.getId());
-//                suser.setLoginname(po.getJobNumber());
-//                suser.setUsername(po.getName());
-//                byte[] salts = PasswordUtil.getSaltBytes();// 自定义加密串,目前获取8位随即
-//                suser.setSalt(PasswordUtil.getEncodeSalts(salts));
-//                suser.setPassword(PasswordUtil.getEncodePassWord(po.getJobNumber(),salts));
-//                userDao.insert(suser);
+                transDao.insert(po);
             }
             result.put("success", true);
         }catch (Exception e){
@@ -277,19 +274,33 @@ public class TransInfoController {
             // 取所有数据如内存 比较处理
 //            user.setId(UUID.randomUUID().toString());
             String cellValue;
+            String user_id;
             while (j < colNum) {
+                TindexUserExample se = new TindexUserExample();
+                TindexUserExample.Criteria job_tc = se.createCriteria();
+                TindexUserExample.Criteria id_tc = se.createCriteria();
                 cellValue = ExcelExportUtil.getCellFormatValue(row.getCell((short)j));
                 cellValue = StringUtils.isNotBlank(cellValue) ? cellValue : null;
-                switch(j) //name sex job_number id_number bank_number bz
+                switch(j)
                 {
-//                    case 0 : "工号"; break;
-//                    case 1 : "身份证号"; break;
+                    case 0 : job_tc.andJobNumberEqualTo(cellValue); break;
+                    case 1 :
+                        se.or(job_tc);
+                        se.or(id_tc.andIdNumberEqualTo(cellValue));
+                        List<TindexUser> list_user = indexuserDao.selectByExample(se);
+                        if( list_user != null && list_user.size() == 1 ){
+                            user_id = list_user.get(0).getId();
+                        }else{
+                            user_id = null;
+                        }
+                        transinfo.setUserId(user_id);
+                        break;
                     case 2 :
                         transinfo.setState(cellValue.indexOf("等待") == -1 ?
                                 (cellValue.indexOf("成功") == -1 ? ( cellValue.indexOf("失败") == -1 ? null : 2 )
                                         : 3)
                                 : 1);
-                        ; break;
+                        break;
                     case 3 : transinfo.setTransValue(cellValue); break;
                     case 4 : transinfo.setSrcbankName(cellValue); break;//"转出银行"
                     case 5 : transinfo.setSrcbankNumber(cellValue); break;//"转出银行卡号"
@@ -300,6 +311,7 @@ public class TransInfoController {
                 }
                 j++;
             }
+            transinfo.setSerialNumber(getSerialNumber());
             list.add(transinfo);
         }
         return list;

@@ -7,6 +7,7 @@ import com.banshion.portal.web.sys.domain.SysDept;
 import com.banshion.portal.web.sys.domain.SysDeptExample;
 import com.banshion.portal.web.sys.domain.SysMenuExample;
 import com.banshion.portal.web.sys.service.impl.MenuTreeNode;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,6 +34,7 @@ public class DeptController {
     private SysDeptMapper deptdao;
 
     @RequestMapping
+    @RequiresPermissions("sys:dept")
     public String index(Model model){
         System.out.println(Securitys.getSubject().isPermitted("sys:dept"));
         System.out.println(Securitys.getSubject().isPermitted("sys:dept1"));

@@ -5,6 +5,7 @@ import com.banshion.portal.web.sys.domain.SysMenu;
 import com.banshion.portal.web.sys.domain.SysPermission;
 import com.banshion.portal.web.sys.service.MenuService;
 import com.banshion.portal.web.sys.service.impl.MenuTreeNode;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,6 +33,7 @@ public class MenuController {
     public MenuService menuDao;
 
     @RequestMapping
+    @RequiresPermissions("sys:menu")
     public String index(){
         return "sys/menu/list";
     }

@@ -44,7 +44,7 @@ public class LoginController
             subject.login(token);
             if (subject.isAuthenticated()) {
 //                return "redirect:/sys/user";
-                return "redirect:/index";
+                return "redirect:/basic";
             } else {
                 return "login/login";
             }

@@ -238,7 +238,8 @@
 
         var treeObj = $.fn.zTree.getZTreeObj(treeId);
         var node = treeObj.getNodeByParam("id","0", null); // 展开根节点
-        treeObj.expandNode(node,true,false,true);
+//        treeObj.expandNode(node,true,false,true);
+        treeObj.expandAll(true);
     }
 
     function beforeDrag(treeId, treeNodes) {

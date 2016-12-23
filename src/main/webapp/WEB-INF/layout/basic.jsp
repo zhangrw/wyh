@@ -96,7 +96,7 @@
                 </li>
             </ul>
         <ul class="nav navbar-nav" id = "backindex">
-            <li id="systemManage_nav"><a href="javascript:{}" onclick="goTo('${ctx}/index')"><i class="glyphicon glyphicon-home" title="工作台"></i></a></li>
+            <li id="systemManage_nav"><a href="javascript:{}" onclick="goTo('${ctx}/basic')"><i class="glyphicon glyphicon-home" title="工作台"></i></a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                                aria-expanded="false">信息维护<span class="caret"></span></a>
@@ -121,54 +121,53 @@
 </div>
 </body>
 <script type="text/javascript">
+    $(function(){
+        var menu = $("#systemManage_nav");
+        var menuParent = $("#menuParent");
+        $(document).ready(function(){
+            var menuArr = new Array();
+            $.getJSON("${ctx}/sys/menu/menutree",{},function(data){
+                for( var i = 0 ; i < data.length ; i++ ){
+                    menuArr = menuArr.concat(listNodes(data[i]));
+                }
+                $(menuArr).each(function(i , node){
+                    if( node.type == 1 ){ // 菜单组
+                        var newMenuHtml = "<ul class='nav navbar-nav'><li class='dropdown'><a href='#' class='dropdown-toggle'" +
+                                "  data-toggle='dropdown' role='button' " +
+                                " aria-haspopup='true' aria-expanded='false'>"+node.name+" <span class='caret'></span></a> "+
+                                "<ul class='dropdown-menu' id = '"+node.id+"'></ul></li></ul>";
+                        if( node.parentId == '0' ){ // 第一层菜单  根div内插入元素
+                            menuParent.append(newMenuHtml);
+                        }else{ // 不是第一层  需要查找父级菜单插入元素
+                            menuParent.find(node.parentId).append(newMenuHtml);
+                        }
+                    }else{ // 菜单项
+                        var menuHtml ="<li id='"+node.id+"'><a href='javascript:{}' onclick=\"goTo('${ctx}"+node.url+"');\">"+node.name+"</a></li>";
+                        menuParent.find("ul#"+node.parentId).append(menuHtml);
+                    }
+                });
+            });
 
-    <%--var menu = $("#systemManage_nav");--%>
-    <%--var menuParent = $("#menuParent");--%>
-    <%--$(document).ready(function(){--%>
-        <%--var menuArr = new Array();--%>
-        <%--$.getJSON("${ctx}/sys/menu/menutree",{},function(data){--%>
-            <%--for( var i = 0 ; i < data.length ; i++ ){--%>
-                <%--menuArr = menuArr.concat(listNodes(data[i]));--%>
-            <%--}--%>
-            <%--$(menuArr).each(function(i , node){--%>
-                <%--if( node.type == 1 ){ // 菜单组--%>
-                    <%--var newMenuHtml = "<ul class='nav navbar-nav'><li class='dropdown'><a href='#' class='dropdown-toggle'" +--%>
-                            <%--"  data-toggle='dropdown' role='button' " +--%>
-                            <%--" aria-haspopup='true' aria-expanded='false'>"+node.name+" <span class='caret'></span></a> "+--%>
-                            <%--"<ul class='dropdown-menu' id = '"+node.id+"'></ul></li></ul>";--%>
-                    <%--if( node.parentId == '0' ){ // 第一层菜单  根div内插入元素--%>
-                        <%--menuParent.append(newMenuHtml);--%>
-                    <%--}else{ // 不是第一层  需要查找父级菜单插入元素--%>
-                        <%--menuParent.find(node.parentId).append(newMenuHtml);--%>
-                    <%--}--%>
-                <%--}else{ // 菜单项--%>
-                    <%--var menuHtml ="<li id='"+node.id+"'><a href='javascript:{}' onclick=\"goTo('${ctx}"+node.url+"');\">"+node.name+"</a></li>";--%>
-                    <%--menuParent.find("ul#"+node.parentId).append(menuHtml);--%>
-                <%--}--%>
-            <%--});--%>
-        <%--});--%>
+        });
 
-    <%--});--%>
-
-<%--// 遍历菜单树节点--%>
-    <%--function listNodes( node ){--%>
-        <%--var nodeArr = new Array();--%>
-        <%--nodeArr.push(node);--%>
-        <%--if( node.children.length == 0 ){--%>
-            <%--return nodeArr;--%>
-        <%--}else{--%>
-            <%--for(var i = 0 ; i < node.children.length ; i++ ){--%>
-                <%--var tempNode = node.children[i];--%>
-                <%--if( tempNode.children.length == 0  ){--%>
-                    <%--nodeArr.push(tempNode);--%>
-                <%--}else{--%>
-                    <%--return nodeArr.concat(listNodes(tempNode));--%>
-                <%--}--%>
-            <%--}--%>
-        <%--}--%>
-        <%--return nodeArr;--%>
-    <%--}--%>
-
-
+        // 遍历菜单树节点
+        function listNodes( node ){
+            var nodeArr = new Array();
+            nodeArr.push(node);
+            if( node.children.length == 0 ){
+                return nodeArr;
+            }else{
+                for(var i = 0 ; i < node.children.length ; i++ ){
+                    var tempNode = node.children[i];
+                    if( tempNode.children.length == 0  ){
+                        nodeArr.push(tempNode);
+                    }else{
+                        return nodeArr.concat(listNodes(tempNode));
+                    }
+                }
+            }
+            return nodeArr;
+        }
+    });
 </script>
 </html>

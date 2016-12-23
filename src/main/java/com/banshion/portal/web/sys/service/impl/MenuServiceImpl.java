@@ -7,6 +7,8 @@ import com.banshion.portal.web.sys.dao.SysMenuMapper;
 import com.banshion.portal.web.sys.dao.SysPermissionMapper;
 import com.banshion.portal.web.sys.domain.SysMenu;
 import com.banshion.portal.web.sys.service.MenuService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,8 @@ import java.util.*;
  */
 @Service
 public class MenuServiceImpl implements MenuService {
+
+    private static final Logger log = LoggerFactory.getLogger(MenuServiceImpl.class);
 
     @Autowired
     private SysMenuMapper menumapper;
@@ -145,6 +149,10 @@ public class MenuServiceImpl implements MenuService {
         List<SysMenu> list = menumapper.getMenuByUserId(userId);
         String[] idArr = new String[list.size()];
 
+        if(list == null || list.size() < 1){
+            log.info("userid:"+userId+",未配置菜单不进行进一步处理");
+            return null;
+        }
         for( int i = 0 ; i < list.size() ; i++ ){
             idArr[i] = list.get(i).getId();
         }

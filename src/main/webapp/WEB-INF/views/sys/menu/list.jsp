@@ -254,7 +254,8 @@
 
         var treeObj = $.fn.zTree.getZTreeObj(treeId);
         var node = treeObj.getNodeByParam("parent", 0, null);
-        treeObj.expandNode(node,true,false,true);
+//        treeObj.expandNode(node,true,false,true);
+        treeObj.expandAll(true);
     }
 
     function beforeDrag(treeId, treeNodes) {

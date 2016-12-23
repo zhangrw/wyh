@@ -98,7 +98,7 @@
 
 
         <ul class="nav navbar-nav" id = "backindex">
-            <li id="systemManage_nav"><a href="javascript:{}" onclick="goTo('${ctx}/index')"><i class="glyphicon glyphicon-home" title="工作台"></i></a></li>
+            <li id="systemManage_nav"><a href="javascript:{}" onclick="goTo('${ctx}/basic')"><i class="glyphicon glyphicon-home" title="工作台"></i></a></li>
                         <%--<li class="dropdown">--%>
                                 <%--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"--%>
                                    <%--aria-expanded="false">系统管理 <span class="caret"></span></a>--%>

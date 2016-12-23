@@ -1,6 +1,7 @@
 package com.banshion.portal.sys.authentication;
 
 
+import com.banshion.portal.util.Securitys;
 import com.banshion.portal.web.sys.dao.SysPermissionMapper;
 import com.banshion.portal.web.sys.dao.SysRoleMapper;
 import com.banshion.portal.web.sys.dao.SysRolePermissionMapper;
@@ -15,12 +16,13 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by zhang.rw on 16-4-12.
  */
 public class ShiroDbRealm extends AuthorizingRealm
 {
@@ -102,7 +104,7 @@ public class ShiroDbRealm extends AuthorizingRealm
             user.setAdmin(isadmin);
             SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user,
                     token.getPassword(), getName());
-            // 添加登陆日志//
+        // 添加登陆日志//
             //logService.log(Consts.SystemModel.SYS, LogType.BUSINESS, LogLevel.INFO, "用户" + user.getLoginName() + "登录",su.getTenantId(), su.getId(), su.getIP(), su.getName());
             return info;
     }

@@ -220,13 +220,14 @@
             url : '${ctx}/trans/getdata',
             datatype : 'json',
             mtype : 'POST',
-            colNames : [ '流水号','用户名','所属部门','工号','身份证号','转账金额(元)',
+            colNames : ['流水号','用户名','所属部门','工号','身份证号','转账金额(元)',
                 '转出银行卡号','转出银行名称','转入银行卡号','转入银行名称','转账状态','备注信息'],
             colModel :
-                [ {name : 'serial_number',index : 'serial_number',width:"200"}, //,hidden : true
-                {name : 'user_name', index : 'user_name', align:'center' },
-                {name : 'dept_name', index : 'dept_name', align:'center' },
-                {name : 'job_number', index : 'job_number', align:'center',width:"200"},
+                [
+                {name : 'serial_number',key:true,index : 'serial_number',width:"200"}, //,hidden : true
+                {name : 'user_name',  align:'center' },
+                {name : 'dept_name', align:'center' },
+                {name : 'job_number', align:'center',width:"200"},
                 {name : 'id_number', align:'center',width:"200"},
                 {name : 'trans_value', align:'center',width:"200"},
                 {name : 'srcbank_number', align:'center' ,width:"200"},
@@ -252,12 +253,12 @@
             shrinkToFit:false,// 设置出现水平滚动条
             autowidth : true,
             pager : '#pager',
-            sortname : 'id',
+            sortname : 'serial_number',
+            sortorder : "desc",
             altRows:true,
             hidegrid : false,
             viewrecords : true,
             recordpos : 'left',
-            sortorder : "desc",
             emptyrecords : "没有可显示记录",
             loadonce : false,
             multiselect:true,
@@ -275,9 +276,9 @@
         $("#grid").jqGrid(option);
 
         $("#grid").jqGrid('navGrid', '#pager', {edit : false, add : false, del : false, search : false,	position : 'right'})
-<c:if test="${isAdmin}">
+<%--<c:if test="${isAdmin}">--%>
                 .navButtonAdd('#pager',{caption:"新增",buttonicon:"ui-icon-plus",onClickButton: function(){toAdd()},position:"last"})
-</c:if>
+<%--</c:if>--%>
                 .navButtonAdd('#pager',{caption:"修改",buttonicon:"ui-icon-pencil",onClickButton: function(){toModify()},position:"last"})
 <c:if test="${isAdmin}">
                 .navButtonAdd('#pager',{caption:"删除",buttonicon:"ui-icon-trash",onClickButton: function(){toDelete()},position:"last"})
@@ -469,7 +470,21 @@
         window.open("${ctx}/basic/downTemplete?name=trans");
     });
 
+    function showResult(result,message,delay){
+        $("#messageSpanId").text(message);
 
+        if (!delay || typeof(delay)=="undefined" || typeof(delay)!='number'){
+            delay = 2000;
+        }
+        if(result){
+            $("#message").addClass('alert-success').removeClass('alert-danger').slideToggle(1000);
+        }else{
+            $("#message").addClass('alert-danger').removeClass('alert-success').slideToggle(1000);
+        }
+        window.setTimeout(function() {
+            $('#message').slideToggle(1000);
+        }, delay);
+    }
 </script>
 </body>
 </html>

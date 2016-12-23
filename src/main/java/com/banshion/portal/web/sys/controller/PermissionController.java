@@ -26,6 +26,7 @@ public class PermissionController
     private PermissionService permissionDao;
 
     @RequestMapping
+    @RequiresPermissions("sys:pmp")
     public String index(){
         return "sys/permission/list";
     }
