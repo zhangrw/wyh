@@ -6,6 +6,7 @@ import com.banshion.portal.util.Securitys;
 import com.banshion.portal.util.excel.ExcelExportConfig;
 import com.banshion.portal.util.excel.ExcelExportUtil;
 import com.banshion.portal.web.index.dao.TTransInfoMapper;
+import com.banshion.portal.web.index.domain.TTransInfo;
 import com.banshion.portal.web.index.domain.TindexUser;
 import com.banshion.portal.web.index.filter.TransFilter;
 import com.banshion.portal.web.index.filter.UserFilter;
@@ -59,6 +60,10 @@ public class TransInfoController {
     @RequestMapping("getdata")
     public @ResponseBody
     List<Map<String,Object>> getData(TransFilter filter){
+
+        if( !Securitys.isAdmin() ){
+            filter.setUserId(Securitys.getUserId());
+        }
         PageHelper.startPage(filter.getPage(),filter.getRows());
         Page<Map<String,Object>> page = (Page<Map<String,Object>>)transDao.getData(filter);
         return page;
@@ -91,54 +96,36 @@ public class TransInfoController {
         return "trans/form";
     }
 
+    /**
+     *
+     * @param filter 拿来当PO使使
+     * @return
+     */
     @RequestMapping("save")
     @Transactional
     public @ResponseBody
-    ResponseEntity<?> save(ShiroUser shiroUser, String checkbox , String password){
+    ResponseEntity<?> save(TransFilter filter){
         Map<String,Object> result = new HashMap<String,Object>();
+
+        TTransInfo po = new TTransInfo();
+
+        po.setUserId(filter.getUserId());
+        po.setSrcbankName(filter.getSrcbankName());
+        po.setSrcbankNumber(filter.getSrcbankNumber());
+        po.setTargetbankName(filter.getTargetbankName());
+        po.setTargetbankNumber(filter.getTargetbankNumber());
+        po.setBz(filter.getBz());
         try{
-//            if( StringUtils.isNoneBlank(shiroUser.getId()) ){ //更新
-//                SysUser suer = new SysUser();
-//                suer.setId(shiroUser.getId());
-//                suer.setLoginname(shiroUser.getLoginName());
-//                suer.setUsername(shiroUser.getName());
-//                if(StringUtils.isNoneBlank(checkbox) && StringUtils.isNotBlank(password)){
-//                    byte[] salts = PasswordUtil.getSaltBytes();// 自定义加密串,目前获取8位随机
-//                    suer.setSalt(PasswordUtil.getEncodeSalts(salts));
-//                    suer.setPassword(PasswordUtil.getEncodePassWord(password,salts));
-//                }
-//                userDao.updateByPrimaryKeySelective(suer);
-//                TindexUser tuser = new TindexUser();
-//                tuser.setId(shiroUser.getId());
-//                tuser.setName(shiroUser.getName());
-//                tuser.setSex(shiroUser.getSex());
-//                tuser.setJobNumber(shiroUser.getJobNumber());
-//                tuser.setIdNumber(shiroUser.getIdNumber());
-//                tuser.setBankNumber(shiroUser.getBankNumber());
-//                tuser.setBz(shiroUser.getBz());
-//                tuser.setDeptId(shiroUser.getDeptId());
-//                tuserDao.updateByPrimaryKeySelective(tuser);
-//            }else{ // 新增
-//                String newId = UUID.randomUUID().toString();
-//                SysUser suer = new SysUser();
-//                suer.setId(newId);
-//                suer.setLoginname(shiroUser.getLoginName());
-//                suer.setUsername(shiroUser.getName());
-//                byte[] salts = PasswordUtil.getSaltBytes();// 自定义加密串,目前获取8位随机
-//                suer.setSalt(PasswordUtil.getEncodeSalts(salts));
-//                suer.setPassword(PasswordUtil.getEncodePassWord(password,salts));
-//                userDao.insert(suer);
-//                TindexUser tuser = new TindexUser();
-//                tuser.setId(newId);
-//                tuser.setName(shiroUser.getName());
-//                tuser.setSex(shiroUser.getSex());
-//                tuser.setJobNumber(shiroUser.getJobNumber());
-//                tuser.setIdNumber(shiroUser.getIdNumber());
-//                tuser.setBankNumber(shiroUser.getBankNumber());
-//                tuser.setBz(shiroUser.getBz());
-//                tuser.setDeptId(shiroUser.getDeptId());
-//                tuserDao.insert(tuser);
-//            }
+            if( StringUtils.isNotBlank(filter.getSerialNumber()) ){ //更新
+                po.setSerialNumber(filter.getSerialNumber());
+                transDao.updateByPrimaryKeySelective(po);
+            }else{
+                po.setSerialNumber(getSerialNumber());
+                po.setState(1);
+                po.setTransValue(filter.getTransValue());
+                transDao.insertSelective(po);
+            }
+
             result.put("success",true);
             result.put("msg","数据保存成功!");
         }catch (Exception e)
@@ -172,17 +159,18 @@ public class TransInfoController {
         try {
             response.setContentType("application/x-msdownload;");
             response.setHeader("Content-disposition", "attachment; filename="
-                    + new String("用户基本信息.xls".getBytes("utf-8"), "ISO8859-1"));
+                    + new String("转账信息.xls".getBytes("utf-8"), "ISO8859-1"));
             // 对可能乱码字段进行转码处理
-//            filter.setName(java.net.URLDecoder.decode(filter.getName(),"UTF-8"));
-//            filter.setLoginName(java.net.URLDecoder.decode(filter.getLoginName(),"UTF-8"));
-            List<Map<String,Object>> list =  transDao.getData(filter);
+            filter.setUserName(java.net.URLDecoder.decode(filter.getUserName(),"UTF-8"));
+            List<Map<String,Object>> list =  transDao.exportData(filter);
             bos = new BufferedOutputStream(response.getOutputStream());
             HSSFWorkbook workbook = new HSSFWorkbook();
-            String[] titleArr = {"部门名称","姓名","性别","工号","身份证号","银行卡号","备注信息"};
-            String[] keyArr = {"DEPTNAME","NAME","SEX","JOB_NUMBER","ID_NUMBER","BANK_NUMBER","BZ"};
+            String[] titleArr = {"流水号","姓名","所属部门","工号","身份证号","转账状态","转账金额",
+                    "转出银行","转出银行卡号","转入银行","转入银行卡号","备注信息"};
+            String[] keyArr = {"serial_number","user_name","dept_name","job_number","id_number","state","trans_value",
+                    "srcbank_name","srcbank_number","targetbank_name","targetbank_number","bz"};
             ExcelExportConfig config = new ExcelExportConfig();
-            config.setSheetName("用户基本信息");
+            config.setSheetName("转账信息");
             ExcelExportUtil.fillExcel(list,titleArr,keyArr, workbook,config);
             workbook.write(bos);
         } catch (Exception e) {
@@ -198,43 +186,42 @@ public class TransInfoController {
     public ResponseEntity impExcel(@RequestParam MultipartFile file, HttpServletRequest request)
             throws Exception{
         Map<String, Object> result = new HashMap<String, Object>();
-//        long fileSize = file.getSize();
-//        if(fileSize > 10240000){
-//            result.put("msg", "文件大小不能超过10M!");
-//            result.put("success", false);
-//            return new ResponseEntity(result, HttpStatus.OK);
-//        }
-//
-//        String proPath = request.getSession().getServletContext().getRealPath("");
-//        int index = proPath.lastIndexOf(File.separator) + 1;
-//        String ctxPath = proPath.substring(0,index)+"uploadFiles";
-//        File dirPath = new File(ctxPath);
-//        if (!dirPath.exists()) {
-//            dirPath.mkdirs();
-//        }
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-//        String fileName = sdf.format(new Date())+"_"+ Securitys.getUserName()+"_"+new Date().getTime()+".xls";
-////        String fileName =file.getOriginalFilename();
-//        File filePath = new File(ctxPath + File.separator + fileName);
-//        try {
-//            if(!filePath.exists()){
-//                filePath.createNewFile();
-//            }
-//            file.transferTo(filePath);
-//            result.put("success", true);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            if(filePath.isFile()&&filePath.exists()){
-//                filePath.delete();
-//            }
-//            result.put("msg", "上传失败，请联系管理员！");
-//            result.put("success", false);
-//        }
-//        try{
-//            List<TindexUser> list = readUserExcel(filePath);
-//            SysUser suser;
-//            for( TindexUser po : list ){
-//                suser = new SysUser();
+        long fileSize = file.getSize();
+        if(fileSize > 10240000){
+            result.put("msg", "文件大小不能超过10M!");
+            result.put("success", false);
+            return new ResponseEntity(result, HttpStatus.OK);
+        }
+
+        String proPath = request.getSession().getServletContext().getRealPath("");
+        int index = proPath.lastIndexOf(File.separator) + 1;
+        String ctxPath = proPath.substring(0,index)+"uploadFiles";
+        File dirPath = new File(ctxPath);
+        if (!dirPath.exists()) {
+            dirPath.mkdirs();
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+        String fileName = sdf.format(new Date())+"_"+ Securitys.getUserName()+"_"+new Date().getTime()+"_转账信息导入.xls";
+        File filePath = new File(ctxPath + File.separator + fileName);
+        try {
+            if(!filePath.exists()){
+                filePath.createNewFile();
+            }
+            file.transferTo(filePath);
+            result.put("success", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            if(filePath.isFile()&&filePath.exists()){
+                filePath.delete();
+            }
+            result.put("msg", "上传失败，请联系管理员！");
+            result.put("success", false);
+        }
+        try{
+            List<TTransInfo> list = readUserExcel(filePath);
+            SysUser suser;
+            for( TTransInfo po : list ){
+                suser = new SysUser();
 //                tuserDao.insert(po);
 //                suser.setId(po.getId());
 //                suser.setLoginname(po.getJobNumber());
@@ -243,18 +230,18 @@ public class TransInfoController {
 //                suser.setSalt(PasswordUtil.getEncodeSalts(salts));
 //                suser.setPassword(PasswordUtil.getEncodePassWord(po.getJobNumber(),salts));
 //                userDao.insert(suser);
-//            }
-//            result.put("success", true);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            log.info("用户信息Excel上传后处理异常："+e.getMessage());
-//            result.put("msg", "Excel解析异常,请检查Excel格式和数据正确性！");
-//            result.put("success", false);
-//        }
+            }
+            result.put("success", true);
+        }catch (Exception e){
+            e.printStackTrace();
+            log.info("用户信息Excel上传后处理异常："+e.getMessage());
+            result.put("msg", "Excel解析异常,请检查Excel格式和数据正确性！");
+            result.put("success", false);
+        }
         return new ResponseEntity(result, HttpStatus.OK);
     }
 
-    public List<TindexUser> readUserExcel(File file)
+    public List<TTransInfo> readUserExcel(File file)
             throws FileNotFoundException {
         POIFSFileSystem fs = null;
         HSSFWorkbook wb = null;
@@ -263,7 +250,7 @@ public class TransInfoController {
         InputStream is = new FileInputStream(file.toString());
         Map<Integer, String> content = new HashMap<Integer, String>();
         String str = "";
-        List<TindexUser> list = new ArrayList<TindexUser>();
+        List<TTransInfo> list = new ArrayList<TTransInfo>();
         try {
             fs = new POIFSFileSystem(is);
             wb = new HSSFWorkbook(fs);
@@ -276,9 +263,9 @@ public class TransInfoController {
         row = sheet.getRow(0);
         int colNum = row.getPhysicalNumberOfCells();
         // 正文内容应该从第二行开始,第一行为表头的标题
-        TindexUser user;
+        TTransInfo transinfo;
         for (int i = 1; i <= rowNum; i++){
-            user = new TindexUser();
+            transinfo = new TTransInfo();
             row = sheet.getRow(i);
             if (row == null)
                 continue;
@@ -288,24 +275,32 @@ public class TransInfoController {
                 break;
             }
             // 取所有数据如内存 比较处理
-            user.setId(UUID.randomUUID().toString());
+//            user.setId(UUID.randomUUID().toString());
             String cellValue;
             while (j < colNum) {
                 cellValue = ExcelExportUtil.getCellFormatValue(row.getCell((short)j));
                 cellValue = StringUtils.isNotBlank(cellValue) ? cellValue : null;
                 switch(j) //name sex job_number id_number bank_number bz
                 {
-                    case 0 : user.setName(cellValue); break;
-                    case 1 : user.setSex(cellValue.indexOf("男") != -1 ? 1 : 2 ); break;
-                    case 2 : user.setJobNumber(cellValue); break;
-                    case 3 : user.setIdNumber(cellValue); break;
-                    case 4 : user.setBankNumber(cellValue); break;
-                    case 5 : user.setBz(cellValue); break;
+//                    case 0 : "工号"; break;
+//                    case 1 : "身份证号"; break;
+                    case 2 :
+                        transinfo.setState(cellValue.indexOf("等待") == -1 ?
+                                (cellValue.indexOf("成功") == -1 ? ( cellValue.indexOf("失败") == -1 ? null : 2 )
+                                        : 3)
+                                : 1);
+                        ; break;
+                    case 3 : transinfo.setTransValue(cellValue); break;
+                    case 4 : transinfo.setSrcbankName(cellValue); break;//"转出银行"
+                    case 5 : transinfo.setSrcbankNumber(cellValue); break;//"转出银行卡号"
+                    case 6 : transinfo.setTargetbankName(cellValue); break;//"转入银行"
+                    case 7 : transinfo.setTargetbankNumber(cellValue); break;
+                    case 8 : transinfo.setBz(cellValue); break;
                     default: break;
                 }
                 j++;
             }
-            list.add(user);
+            list.add(transinfo);
         }
         return list;
     }

@@ -47,7 +47,7 @@
     <div class="form-group">
     <label class="col-lg-3 col-md-3  control-label" for="srcbankNumber"><span style="color: red">*</span>转出银行卡号：</label>
         <div class="col-lg-8 col-md-8">
-            <input type="text" id="srcbankNumber"  name="srcbankNumber" class="form-control input-sm" value="${transinfo.get("srcbank_number")}" placeholder="转出银行卡号" required>
+            <input type="number" id="srcbankNumber"  name="srcbankNumber" class="form-control input-sm" value="${transinfo.get("srcbank_number")}" placeholder="转出银行卡号" required>
         </div>
     </div>
     <div class="form-group">
@@ -57,15 +57,18 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="col-lg-3 col-md-3  control-label" for="transValue"><span style="color: red">*</span>转账金额：</label>
+        <label class="col-lg-3 col-md-3  control-label" for="transValue"><span style="color: red">*</span>转账金额(元)：</label>
         <div class="col-lg-6 col-md-6">
-            <input type="text" id="transValue"  name="transValue" class="form-control input-sm" value="${transinfo.get("trans_value")}" placeholder="转账金额" required>
+            <input type="number" id="transValue"  name="transValue"
+                   <%--onkeyup="this.value=this.value.replace(/\D/g,'')"--%>
+                   <%--onafterpaste="this.value=this.value.replace(/\D/g,'')"--%>
+                   class="form-control input-sm" value="${transinfo.get("trans_value")}" placeholder="转账金额" required>
         </div>
     </div>
     <div class="form-group">
     <label class="col-lg-3 col-md-3  control-label" for="targetbankNumber"><span style="color: red">*</span>转入银行卡号：</label>
         <div class="col-lg-8 col-md-8">
-            <input type="text" id="targetbankNumber"  name="targetbankNumber" class="form-control input-sm" value="${transinfo.get("targetbank_number")}" placeholder="转入银行卡号" required>
+            <input type="number" id="targetbankNumber"  name="targetbankNumber" class="form-control input-sm" value="${transinfo.get("targetbank_number")}" placeholder="转入银行卡号" required>
         </div>
     </div>
     <div class="form-group">
@@ -89,6 +92,7 @@
                     minChars: 0,
                     mustMatch:true,
                     width:260,
+                    max:10, //最多一次展示10条记录
                     // 下拉列表显示的字段 ，如果多个用表格格式化，如果单个 直接  return item.COUNTRY_NAME; 即可
                     formatItem: function(item,i, max) {
                         return '<table><tr><td width="180px;">' + item.name + '</td></tr></table>';//<td width="80px;">' + item.id + '</td>
@@ -119,6 +123,8 @@
                     minChars: 0,
                     mustMatch:true,
                     width:260,
+                    max:10, //最多一次展示10条记录
+                    matchContains: true,
                     // 下拉列表显示的字段 ，如果多个用表格格式化，如果单个 直接  return item.COUNTRY_NAME; 即可
                     formatItem: function(item,i, max) {
                         return '<table><tr><td width="100px;">' + item.name + '</td><td width="180px;">' + item.idNumber + '</td></tr></table>';//<td width="80px;">' + item.id + '</td>

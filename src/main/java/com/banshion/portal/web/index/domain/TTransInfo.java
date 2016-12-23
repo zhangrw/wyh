@@ -1,7 +1,5 @@
 package com.banshion.portal.web.index.domain;
 
-import java.util.Date;
-
 public class TTransInfo {
     private String serialNumber;
 
@@ -20,8 +18,6 @@ public class TTransInfo {
     private int state;
 
     private String bz;
-
-    private Date createDate;
 
     public String getSerialNumber() {
         return serialNumber;
@@ -93,13 +89,5 @@ public class TTransInfo {
 
     public void setBz(String bz) {
         this.bz = bz == null ? null : bz.trim();
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
     }
 }

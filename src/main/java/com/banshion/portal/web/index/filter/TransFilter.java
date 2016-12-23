@@ -19,6 +19,16 @@ public class TransFilter extends BaseFilter {
     private String userId;
     private String transValue;
     private String deptId;
+    private String bz;
+
+
+    public String getBz() {
+        return bz;
+    }
+
+    public void setBz(String bz) {
+        this.bz = bz;
+    }
 
     public String getUserId() {
         return userId;

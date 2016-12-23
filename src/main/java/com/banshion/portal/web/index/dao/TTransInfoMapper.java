@@ -14,17 +14,29 @@ public interface TTransInfoMapper {
 
     int deleteByExample(TTransInfoExample example);
 
+    int deleteByPrimaryKey(String serialNumber);
+
     int insert(TTransInfo record);
 
     int insertSelective(TTransInfo record);
 
     List<TTransInfo> selectByExample(TTransInfoExample example);
 
+    TTransInfo selectByPrimaryKey(String serialNumber);
+
     int updateByExampleSelective(@Param("record") TTransInfo record, @Param("example") TTransInfoExample example);
 
     int updateByExample(@Param("record") TTransInfo record, @Param("example") TTransInfoExample example);
 
+    int updateByPrimaryKeySelective(TTransInfo record);
+
+    int updateByPrimaryKey(TTransInfo record);
+
+
     List<Map<String,Object>> getData(TransFilter filter);
 
+    List<Map<String,Object>> exportData(TransFilter filter);
+
     int deleteByIds(String[] ids);
+
 }

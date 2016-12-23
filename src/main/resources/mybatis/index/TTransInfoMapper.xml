@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.banshion.portal.web.index.dao.TTransInfoMapper" >
   <resultMap id="BaseResultMap" type="com.banshion.portal.web.index.domain.TTransInfo" >
-    <result column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
+    <id column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
     <result column="trans_value" property="transValue" jdbcType="VARCHAR" />
     <result column="user_id" property="userId" jdbcType="VARCHAR" />
     <result column="srcbank_number" property="srcbankNumber" jdbcType="VARCHAR" />
@@ -11,7 +11,6 @@
     <result column="targetbank_number" property="targetbankNumber" jdbcType="VARCHAR" />
     <result column="state" property="state" jdbcType="INTEGER" />
     <result column="bz" property="bz" jdbcType="VARCHAR" />
-    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -73,7 +72,7 @@
   </sql>
   <sql id="Base_Column_List" >
     serial_number, trans_value, user_id, srcbank_number, srcbank_name, targetbank_name, 
-    targetbank_number, state, bz, create_date
+    targetbank_number, state, bz
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.banshion.portal.web.index.domain.TTransInfoExample" >
     select
@@ -89,6 +88,16 @@
       order by ${orderByClause}
     </if>
   </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_trans_info
+    where serial_number = #{serialNumber,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_trans_info
+    where serial_number = #{serialNumber,jdbcType=VARCHAR}
+  </delete>
   <delete id="deleteByExample" parameterType="com.banshion.portal.web.index.domain.TTransInfoExample" >
     delete from t_trans_info
     <if test="_parameter != null" >
@@ -98,12 +107,12 @@
   <insert id="insert" parameterType="com.banshion.portal.web.index.domain.TTransInfo" >
     insert into t_trans_info (serial_number, trans_value, user_id, 
       srcbank_number, srcbank_name, targetbank_name, 
-      targetbank_number, state, bz, 
-      create_date)
+      targetbank_number, state, bz
+      )
     values (#{serialNumber,jdbcType=VARCHAR}, #{transValue,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
       #{srcbankNumber,jdbcType=VARCHAR}, #{srcbankName,jdbcType=VARCHAR}, #{targetbankName,jdbcType=VARCHAR}, 
-      #{targetbankNumber,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{bz,jdbcType=VARCHAR}, 
-      #{createDate,jdbcType=TIMESTAMP})
+      #{targetbankNumber,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{bz,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.banshion.portal.web.index.domain.TTransInfo" >
     insert into t_trans_info
@@ -133,9 +142,6 @@
       <if test="bz != null" >
         bz,
       </if>
-      <if test="createDate != null" >
-        create_date,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="serialNumber != null" >
@@ -162,9 +168,6 @@
       #{state,jdbcType=INTEGER},
       <if test="bz != null" >
         #{bz,jdbcType=VARCHAR},
-      </if>
-      <if test="createDate != null" >
-        #{createDate,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -204,9 +207,6 @@
       <if test="record.bz != null" >
         bz = #{record.bz,jdbcType=VARCHAR},
       </if>
-      <if test="record.createDate != null" >
-        create_date = #{record.createDate,jdbcType=TIMESTAMP},
-      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -222,12 +222,54 @@
       targetbank_name = #{record.targetbankName,jdbcType=VARCHAR},
       targetbank_number = #{record.targetbankNumber,jdbcType=VARCHAR},
       state = #{record.state,jdbcType=INTEGER},
-      bz = #{record.bz,jdbcType=VARCHAR},
-      create_date = #{record.createDate,jdbcType=TIMESTAMP}
+      bz = #{record.bz,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.banshion.portal.web.index.domain.TTransInfo" >
+    update t_trans_info
+    <set >
+      <if test="transValue != null" >
+        trans_value = #{transValue,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="srcbankNumber != null" >
+        srcbank_number = #{srcbankNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="srcbankName != null" >
+        srcbank_name = #{srcbankName,jdbcType=VARCHAR},
+      </if>
+      <if test="targetbankName != null" >
+        targetbank_name = #{targetbankName,jdbcType=VARCHAR},
+      </if>
+      <if test="targetbankNumber != null" >
+        targetbank_number = #{targetbankNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="bz != null" >
+        bz = #{bz,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where serial_number = #{serialNumber,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.banshion.portal.web.index.domain.TTransInfo" >
+    update t_trans_info
+    set trans_value = #{transValue,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      srcbank_number = #{srcbankNumber,jdbcType=VARCHAR},
+      srcbank_name = #{srcbankName,jdbcType=VARCHAR},
+      targetbank_name = #{targetbankName,jdbcType=VARCHAR},
+      targetbank_number = #{targetbankNumber,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      bz = #{bz,jdbcType=VARCHAR}
+    where serial_number = #{serialNumber,jdbcType=VARCHAR}
+  </update>
+
 
   <select id="getData" resultType="map" >
     Select
@@ -242,10 +284,79 @@
     left join t_index_user tu on ts.user_id = tu.id
     left join sys_dept sd on tu.dept_id = sd.id
     where 1=1
-    <!--<if test="">-->
-    <!---->
+    <if test="serialNumber != null and serialNumber !=''">
+      and  ts.serial_number like concat('%',#{serialNumber},'%')
+    </if>
+    <if test="deptId != null and deptId !=''">
+      and sd.id=#{deptId}
+    </if>
+    <if test="state != null and state !=''">
+      and ts.state = #{state}
+    </if>
+    <if test="userName != null and userName !=''">
+      and tu.name like  concat('%',#{userName},'%')
+    </if>
+    <if test="jobNumber != null and jobNumber !=''">
+      and tu.job_number like  concat('%',#{jobNumber},'%')
+    </if>
+    <if test="idNumber != null and idNumber !=''">
+      and tu.id_number like  concat('%',#{idNumber},'%')
+    </if>
+    <!--<if test="sidx != null and sidx != ''">-->
+    <!--order by ${sidx}-->
+    <!--<if test="sord!=null and sord!= ''">-->
+    <!--${sord}-->
+    <!--</if>-->
     <!--</if>-->
   </select>
+
+
+  <select id="exportData" resultType="map" >
+    Select
+    ts.serial_number, ts.user_id,
+    ts.srcbank_number,
+    ts.srcbank_name,
+    ts.targetbank_name,
+    ts.targetbank_number,ts.trans_value,
+    (  case ts.state
+    when 1 then '转账等待中'
+    when 2 then '转账失败'
+    when 3 then '转账成功'
+    else ''
+    end  ) as state
+    ,
+    ts.bz,tu.name as user_name,tu.job_number,tu.id_number,
+    sd.id as dept_id,sd.name as dept_name
+    from t_trans_info ts
+    left join t_index_user tu on ts.user_id = tu.id
+    left join sys_dept sd on tu.dept_id = sd.id
+    where 1=1
+    <if test="serialNumber != null and serialNumber !=''">
+      and  ts.serial_number like concat('%',#{serialNumber},'%')
+    </if>
+    <if test="deptId != null and deptId !=''">
+      and sd.id=#{deptId}
+    </if>
+    <if test="state != null and state !=''">
+      and ts.state = #{state}
+    </if>
+    <if test="userName != null and userName !=''">
+      and tu.name like  concat('%',#{userName},'%')
+    </if>
+    <if test="jobNumber != null and jobNumber !=''">
+      and tu.job_number like  concat('%',#{jobNumber},'%')
+    </if>
+    <if test="idNumber != null and idNumber !=''">
+      and tu.id_number like  concat('%',#{idNumber},'%')
+    </if>
+    <!--<if test="sidx != null and sidx != ''">-->
+    <!--order by ${sidx}-->
+    <!--<if test="sord!=null and sord!= ''">-->
+    <!--${sord}-->
+    <!--</if>-->
+    <!--</if>-->
+  </select>
+
   <delete id="deleteByIds">
     delete from  t_index_user
     where 1=1

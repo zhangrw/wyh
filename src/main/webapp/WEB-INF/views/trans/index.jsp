@@ -59,6 +59,48 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+
+<div id='dialog-uplaod' class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">基本信息</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+
+                <div id="alertForUpload" class="alert alert-danger" hidden>
+                    <strong>Warning!</strong>
+                </div>
+                <form id="uploadForm" method="POST" enctype="multipart/form-data" class="form-horizontal">
+
+                    <div class="form-group">
+                        <label class="col-lg-3 col-md-1  control-label" for="impexcel"><span style="color: red">*</span>选择文件:</label>
+                        <div class="col-lg-7 col-md-8">
+                            <input type="text" name="fileName" id="puf" class="fileload" placeholder="请点击浏览选择文件"/>
+                            <input type="button" value="浏览..." style="height:30px;" onclick="javascript:$('#file').click();" />
+                            <input type="file" name="file" accept=".xls" id="file" style="display:none" onchange="javascript:$('#puf').val($('#file').val());" />
+                        </div>
+                    </div>
+                    <div class="form-group" id="loading" hidden>
+                        <label class="col-lg-5 col-md-1  control-label" for="impexcel">&nbsp;</label>
+                        <div class="col-lg-7 col-md-5">
+                            <img src="${ctx }/static/bootstrap/file-input/img/loading-sm.gif" width="32" height="32" style="margin-right:8px;float:left;vertical-align:top;"/>
+                        </div>
+                    </div>
+                </form>
+
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id ='cancel_upload' class="btn btn-default btn-sm" tabindex="1001">取消</button>
+                <button type="button" id ='do_save_upload' class="btn btn-primary btn-sm" tabindex="1000">提交</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <div id="select">
     <div class="select-main">
         <form action="" id="searchForm" method="post" class="well-work bs-adp form-inline">
@@ -178,17 +220,30 @@
             url : '${ctx}/trans/getdata',
             datatype : 'json',
             mtype : 'POST',
-            colNames : [ '流水号','用户名','所属部门','工号','身份证号','转出银行卡号','转出银行名称','转入银行卡号','转入银行名称','备注信息'],
+            colNames : [ '流水号','用户名','所属部门','工号','身份证号','转账金额(元)',
+                '转出银行卡号','转出银行名称','转入银行卡号','转入银行名称','转账状态','备注信息'],
             colModel :
                 [ {name : 'serial_number',index : 'serial_number',width:"200"}, //,hidden : true
                 {name : 'user_name', index : 'user_name', align:'center' },
                 {name : 'dept_name', index : 'dept_name', align:'center' },
                 {name : 'job_number', index : 'job_number', align:'center',width:"200"},
                 {name : 'id_number', align:'center',width:"200"},
+                {name : 'trans_value', align:'center',width:"200"},
                 {name : 'srcbank_number', align:'center' ,width:"200"},
                 {name : 'srcbank_name', align:'center' ,width:"200"},
                 {name : 'targetbank_number', align:'center',width:"200" },
                 {name : 'targetbank_name', align:'left',width:"200"},
+                {name : 'state', align:'left',formatter:function (value,o,rowobj) {
+                    if( value == '1' ){
+                        return "转账等待中";
+                    }else if(value == '2'){
+                        return "转账失败";
+                    }else if(value == '3'){
+                        return "转账成功";
+                    }else{
+                        return "";
+                    }
+                }},
                 {name : 'bz', align:'left',width:"200" }
             ],
             rowNum : 15,
@@ -347,7 +402,7 @@
 
 
     $("#do_save").click(function(){
-        $("#shirouser")[0].action = "${ctx}/trans/save";
+        $("#transInfoForm")[0].action = "${ctx}/trans/save";
 
         var myform = $("#dialog-confirm").find("form").get(0);
         if(!jQuery(myform).validate().form())
@@ -355,7 +410,7 @@
             return ;
         }
 
-        $("#shirouser").ajaxSubmit({
+        $("#transInfoForm").ajaxSubmit({
             url:"${ctx}/trans/save",
             type:"POST",
             dataType:"json",
@@ -409,7 +464,6 @@
             }
         });
     });
-
 
     $("#downExcel").click(function(){
         window.open("${ctx}/basic/downTemplete?name=trans");
