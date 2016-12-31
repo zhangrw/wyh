@@ -50,12 +50,12 @@
             <input type="number" id="srcbankNumber"  name="srcbankNumber" class="form-control input-sm" value="${transinfo.get("srcbank_number")}" placeholder="转出银行卡号" required>
         </div>
     </div>
-    <div class="form-group">
-    <label class="col-lg-3 col-md-3  control-label" for="srcbankName"><span style="color: red">*</span>转出银行名称：</label>
-        <div class="col-lg-6 col-md-6">
-            <input type="text" id="srcbankName"  name="srcbankName" class="form-control input-sm" value="${transinfo.get("srcbank_name")}" placeholder="转出银行名称" required>
-        </div>
-    </div>
+    <%--<div class="form-group">--%>
+    <%--<label class="col-lg-3 col-md-3  control-label" for="srcbankName"><span style="color: red">*</span>转出银行名称：</label>--%>
+        <%--<div class="col-lg-6 col-md-6">--%>
+            <%--<input type="text" id="srcbankName"  name="srcbankName" class="form-control input-sm" value="${transinfo.get("srcbank_name")}" placeholder="转出银行名称" required>--%>
+        <%--</div>--%>
+    <%--</div>--%>
     <div class="form-group">
         <label class="col-lg-3 col-md-3  control-label" for="transValue"><span style="color: red">*</span>转账金额(元)：</label>
         <div class="col-lg-6 col-md-6">
@@ -65,18 +65,18 @@
                    class="form-control input-sm" value="${transinfo.get("trans_value")}" placeholder="转账金额" required>
         </div>
     </div>
-    <div class="form-group">
-    <label class="col-lg-3 col-md-3  control-label" for="targetbankNumber"><span style="color: red">*</span>转入银行卡号：</label>
-        <div class="col-lg-8 col-md-8">
-            <input type="number" id="targetbankNumber"  name="targetbankNumber" class="form-control input-sm" value="${transinfo.get("targetbank_number")}" placeholder="转入银行卡号" required>
-        </div>
-    </div>
-    <div class="form-group">
-    <label class="col-lg-3 col-md-3  control-label" for="targetbankName"><span style="color: red">*</span>转入银行名称：</label>
-        <div class="col-lg-6 col-md-6">
-            <input type="text" id="targetbankName"  name="targetbankName" class="form-control input-sm" value="${transinfo.get("targetbank_name")}" placeholder="转入银行名称" required>
-        </div>
-    </div>
+    <%--<div class="form-group">--%>
+    <%--<label class="col-lg-3 col-md-3  control-label" for="targetbankNumber"><span style="color: red">*</span>转入银行卡号：</label>--%>
+        <%--<div class="col-lg-8 col-md-8">--%>
+            <%--<input type="number" id="targetbankNumber"  name="targetbankNumber" class="form-control input-sm" value="${transinfo.get("targetbank_number")}" placeholder="转入银行卡号" required>--%>
+        <%--</div>--%>
+    <%--</div>--%>
+    <%--<div class="form-group">--%>
+    <%--<label class="col-lg-3 col-md-3  control-label" for="targetbankName"><span style="color: red">*</span>转入银行名称：</label>--%>
+        <%--<div class="col-lg-6 col-md-6">--%>
+            <%--<input type="text" id="targetbankName"  name="targetbankName" class="form-control input-sm" value="${transinfo.get("targetbank_name")}" placeholder="转入银行名称" required>--%>
+        <%--</div>--%>
+    <%--</div>--%>
     <div class="form-group">
     <label class="col-lg-3 col-md-3  control-label" for="bz">备注信息：</label>
         <div class="col-lg-9 col-md-9 ">

@@ -110,7 +110,7 @@ public class UserController
         }
         else
         {
-            userDao.save(user);
+            userDao.UpdateUserRole(user,null);
         }
         return new ResponseEntity(res, HttpStatus.OK);
     }

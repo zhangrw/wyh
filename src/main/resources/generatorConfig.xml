@@ -34,7 +34,7 @@
         也可以使用“MAVEN”来自动生成，这样生成的代码会在target/generatord-source目录下
         -->
         <!--<javaModelGenerator targetPackage="com.joey.mybaties.test.pojo" targetProject="MAVEN">-->
-        <javaModelGenerator targetPackage="com.banshion.portal.web.index.domain" targetProject="./src/main/java">
+        <javaModelGenerator targetPackage="com.banshion.portal.web.sqlserver.domain" targetProject="./src/main/java">
             <!-- enableSubPackages:是否让schema作为包的后缀 -->
             <property name="enableSubPackages" value="false"/>
             <!-- 从数据库返回的值被清理前后的空格  -->
@@ -42,15 +42,14 @@
         </javaModelGenerator>
 
         <!--对应的mapper.xml文件  -->
-        <sqlMapGenerator targetPackage="index" targetProject="./src/main/resources/mybatis">
+        <sqlMapGenerator targetPackage="sqlserver" targetProject="./src/main/resources/mybatis">
             <!--<property name="enableSubPackages" value="true"/>-->
         </sqlMapGenerator>
 
         <!-- 对应的Mapper接口类文件 -->
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.banshion.portal.web.index.dao" targetProject="./src/main/java">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.banshion.portal.web.sqlserver.dao" targetProject="./src/main/java">
             <!--<property name="enableSubPackages" value="true"/>-->
         </javaClientGenerator>
-
 
         <!-- 列出要生成代码的所有表，这里配置的是不生成Example文件 -->
         <table tableName="t_trans_info" domainObjectName="TTransInfo" >
@@ -59,10 +58,26 @@
                <!--enableDeleteByExample="false"-->
                <!--enableSelectByExample="false"-->
                <!--selectByExampleQueryId="false"-->
-
             <!--<property name="useActualColumnNames" value="false"/>-->
             <!-- 改变某些列的映射类型 注意JDBCtype不要错 -->
             <columnOverride column="state" javaType="int" jdbcType="INTEGER"/>
+        </table>
+        <table tableName="sys_dept" domainObjectName="SysDept" >
+            <columnOverride column="type" javaType="int" jdbcType="INTEGER"/>
+        </table>
+        <table tableName="sys_menu" domainObjectName="SysMenu" >
+            <columnOverride column="type" javaType="int" jdbcType="INTEGER"/>
+            <columnOverride column="menu_order" javaType="int" jdbcType="INTEGER"/>
+        </table>
+        <table tableName="sys_permission" domainObjectName="SysPermission" >
+            <columnOverride column="type" javaType="int" jdbcType="INTEGER"/>
+        </table>
+        <table tableName="sys_role" domainObjectName="SysRole" ></table>
+        <table tableName="sys_role_permission" domainObjectName="SysRolePermission" ></table>
+        <table tableName="sys_user" domainObjectName="SysUser" ></table>
+        <table tableName="sys_user_role" domainObjectName="SysUserRole" ></table>
+        <table tableName="t_index_user" domainObjectName="TindexUser" >
+            <columnOverride column="sex" javaType="int" jdbcType="INTEGER"/>
         </table>
     </context>
 </generatorConfiguration>

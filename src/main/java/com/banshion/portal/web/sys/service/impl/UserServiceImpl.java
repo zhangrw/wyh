@@ -169,7 +169,7 @@ public class UserServiceImpl implements UserService
             SysUserRole sur = new SysUserRole();
             for( String roleid : roleids ){
                 sur.setUserId(userId);
-                sur.setUserId(roleid);
+                sur.setRoleId(roleid);
                 userrolemapper.insert(sur);
             }
             return userId;

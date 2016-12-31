@@ -287,16 +287,41 @@
     </select>
 
     <select id="getMenuTreeById" resultMap="BaseResultMap" >
-
+        with cte as
+        (
+        select a.id, a.name, a.url, a.parent_id, a.permission, a.description, a.menu_order, a.type
+        from sys_menu a where a.id in
+        <foreach collection="array" item="mid" index="index"
+                 open="(" close=")" separator=",">
+            #{mid}
+        </foreach>
+        union all
+        select k.id, k.name, k.url, k.parent_id, k.permission, k.description, k.menu_order, k.type
+        from sys_menu k inner join cte c on c.parent_id = k.id
+        )select * from cte
+        <!-- mysql 版递归
         select DISTINCT <include refid="Base_Column_List" />
         from sys_menu
         where 1=1 and
         <foreach collection="array" item="id" index="index"
                  open="(" close=")" separator=" or ">
             FIND_IN_SET(id , queryParent( #{id}))
-        </foreach>
+        </foreach> -->
+        <!--  queryParent定义
+        BEGIN
+        DECLARE sTemp VARCHAR(4000);
+        DECLARE sTempChd VARCHAR(4000);
 
+        SET sTemp = '$';
+        SET sTempChd = cast(areaId as char);
 
+        WHILE sTempChd is not NULL DO
+        SET sTemp = CONCAT(sTemp,',',sTempChd);
+        SELECT group_concat(parent_Id) INTO sTempChd FROM sys_menu where FIND_IN_SET(id,sTempChd)>0;
+        END WHILE;
+        return sTemp;
+        END
+        -->
     </select>
 
 </mapper>

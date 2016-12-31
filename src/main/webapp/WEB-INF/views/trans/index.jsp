@@ -221,7 +221,9 @@
             datatype : 'json',
             mtype : 'POST',
             colNames : ['流水号','用户名','所属部门','工号','身份证号','转账金额(元)',
-                '转出银行卡号','转出银行名称','转入银行卡号','转入银行名称','转账状态','备注信息'],
+                '转出银行卡号',
+                //'转出银行名称','转入银行卡号','转入银行名称',
+                '转账状态','备注信息'],
             colModel :
                 [
                 {name : 'serial_number',key:true,index : 'serial_number',width:"200"}, //,hidden : true
@@ -231,9 +233,9 @@
                 {name : 'id_number', align:'center',width:"200"},
                 {name : 'trans_value', align:'center',width:"200"},
                 {name : 'srcbank_number', align:'center' ,width:"200"},
-                {name : 'srcbank_name', align:'center' ,width:"200"},
-                {name : 'targetbank_number', align:'center',width:"200" },
-                {name : 'targetbank_name', align:'left',width:"200"},
+//                {name : 'srcbank_name', align:'center' ,width:"200"},
+//                {name : 'targetbank_number', align:'center',width:"200" },
+//                {name : 'targetbank_name', align:'left',width:"200"},
                 {name : 'state', align:'left',formatter:function (value,o,rowobj) {
                     if( value == '1' ){
                         return "转账等待中";
